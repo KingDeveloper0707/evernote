@@ -13,4 +13,5 @@ CKEDITOR.editorConfig = function( config ) {
 	config.fontSize_defaultLabel = '16px';
 */
 	config.font_defaultLabel = 'Sans-Serif';
+
 };
