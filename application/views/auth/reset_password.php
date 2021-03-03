@@ -22,8 +22,8 @@
 
 <body class="login-page">
     <div class="login-box">
-        <div class="logo">
-            <a href="javascript:void(0);">CI Material Admin</a>
+         <div class="logo">
+            <a href="javascript:void(0);"><img src="<?php echo base_url('public/images/brain_logo.png');?>" /></a>
         </div>
         <?php if(isset($msg) || validation_errors() !== ''): ?>
             <div class="alert alert-warning alert-dismissible">
