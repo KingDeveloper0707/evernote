@@ -11,8 +11,8 @@
         $config['smtp_host']            = "ssl://smtp.googlemail.com";
         $config['smtp_port']            = "465";
 		$config['smtp_timeout'] 		= '30';
-		$config['smtp_user']    		= "dantegempawnbrokers@gmail.com";
-		$config['smtp_pass']    		= "Postage@1";
+		$config['smtp_user']    		= "cole@danrite.com";
+		$config['smtp_pass']    		= "Rms333ok!!!";
 		$config['smtp_crypto'] 			= 'security';
         $config['mailtype'] 			= 'html';
         $config['charset']  			= 'utf-8';
@@ -23,7 +23,7 @@
 
         $controller->email->initialize($config);
 			
-		$controller->email->from( 'no-reply@gempawnbrokers.com' , 'GEM Admin' );
+		$controller->email->from( 'info@careequity.com' , 'CareEquity Brain' );
 		
 		$controller->email->to($to);
 		
@@ -49,7 +49,7 @@
     }
     
     function sendEmail($to = '', $subject, $message, $cc = '') {
-		$from_email = 'GEM Admin <admin@app.gempawnbrokers.com>';
+		$from_email = 'CareEquity Brain <info@careequity.com>';
 		
 		// To send HTML mail, the Content-type header must be set
 		$headers[] = 'MIME-Version: 1.0';
