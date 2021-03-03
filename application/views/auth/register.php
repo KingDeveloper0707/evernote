@@ -27,8 +27,8 @@
 
 <body class="login-page">
     <div class="login-box">
-        <div class="logo">
-            <a href="javascript:void(0);">CI Material Admin</a>
+    <div class="logo">
+            <a href="javascript:void(0);"><img src="<?php echo base_url('public/images/brain_logo.png');?>" /></a>
         </div>
         <?php if(isset($msg) || validation_errors() !== ''): ?>
             <div class="alert alert-warning alert-dismissible">
@@ -100,7 +100,7 @@
                     </div>
                     <?php endif; ?>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 login-wrap">
                             <input type="submit" name="submit" id="submit" class="btn btn-block btn-success waves-effect" value="Register">
                         </div>
                     </div>
