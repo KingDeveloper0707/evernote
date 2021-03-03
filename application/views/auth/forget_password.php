@@ -76,7 +76,7 @@
                     <?php endif; ?>
                     
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 login-wrap">
                             <input type="submit" name="submit" id="submit" class="btn btn-block btn-success waves-effect" value="Recover Password">
                         </div>
                     </div>

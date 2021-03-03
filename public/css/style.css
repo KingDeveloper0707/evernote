@@ -2522,7 +2522,7 @@ section.content {
 .btn-success:hover,
 .btn-success:active,
 .btn-success:focus {
-  background-color: #2b982b !important; }
+  background-color: #fff !important; }
 
 .btn-primary,
 .btn-primary:hover,
@@ -3429,7 +3429,7 @@ section.content {
 
 /* Checkbox & Radio ============================ */
 [type="checkbox"] + label {
-  padding-left: 26px;
+  padding-left: 35px;
   height: 25px;
   line-height: 21px;
   font-size: 13px;
@@ -7727,19 +7727,29 @@ fieldset[disabled] .form-control {
 
 /* Login Page ================================== */
 .login-page {
-  background: url(../images/login_bg.jpg);
+  /*background: url(../images/login_bg.jpg);*/
   padding-left: 0;
   max-width: 360px;
-  margin: 5% auto;
-  overflow-x: hidden; }
+  margin: 250px auto;
+  overflow-x: hidden; 
+  background: #1A1A1A;
+}
+
+.login-page .logo {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+
+}
+
   .login-page .login-box .msg {
-    color: #555;
+    color: #fff;
     margin-bottom: 30px;
     text-align: center; }
   .login-page .login-box a {
     font-size: 14px;
     text-decoration: none;
-    color: #00BCD4; }
+    color: #fff; }
   .login-page .login-box .logo {
   	width: 160px;
   	margin: 0 auto 20px;
@@ -8072,4 +8082,57 @@ input[type="checkbox"].chkclass {
 
 tr.unread {
 	font-weight: bold;
+}
+/*Evan Edit*/
+
+.login-box .card {
+  background: #000;
+  box-shadow: 0px 0px 50px #FFFFFF88;
+  transition-duration: 0.3s;
+}
+
+.login-box .card:hover {
+  background: #000;
+  box-shadow: 0px 0px 80px #FFFFFF88;
+  transition-duration: 0.3s;
+}
+
+.card .input-group .form-line {
+  border-bottom: 1px solid #707070;
+
+}
+
+.card .form-control {
+  background: black;
+  color: white;
+}
+
+.card .form-control:-webkit-autofill,
+.card .form-control:-webkit-autofill:hover, 
+.card .form-control:-webkit-autofill:focus {
+  
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+.card .input-group .input-group-addon .material-icons {
+  color: white;
+}
+
+.card .body {
+  color: #fff;
+}
+
+.login-wrap {
+  text-align: center;
+}
+
+.login-wrap .btn-success{
+   color: black;
+    font-weight: 600;
+    width: 150px ! important;
+    margin: auto ! important;
+    text-align: center;
 }
