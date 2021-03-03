@@ -8097,19 +8097,19 @@ tr.unread {
   transition-duration: 0.3s;
 }
 
-.card .input-group .form-line {
+.login-page .card .input-group .form-line {
   border-bottom: 1px solid #707070;
 
 }
 
-.card .form-control {
+.login-page .card .form-control {
   background: black;
   color: white;
 }
 
-.card .form-control:-webkit-autofill,
-.card .form-control:-webkit-autofill:hover, 
-.card .form-control:-webkit-autofill:focus {
+.login-page .card .form-control:-webkit-autofill,
+.login-page .card .form-control:-webkit-autofill:hover, 
+.login-page .card .form-control:-webkit-autofill:focus {
   
   -webkit-text-fill-color: white;
   -webkit-box-shadow: 0 0 0px 1000px #000 inset;
@@ -8117,11 +8117,11 @@ tr.unread {
 }
 
 
-.card .input-group .input-group-addon .material-icons {
+.login-page .card .input-group .input-group-addon .material-icons {
   color: white;
 }
 
-.card .body {
+.login-page .card .body {
   color: #fff;
 }
 
