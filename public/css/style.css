@@ -8170,9 +8170,7 @@ tr.unread {
   top: 0px;
 }
 
-#templates {
-  display: none;
-}
+
 
 @media (max-width: 1170px) {
   .theme-red .navbar {

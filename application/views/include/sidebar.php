@@ -56,7 +56,7 @@
           </li>
         </ul>
       </li>
-      
+      <!--
       <li id="customers">
         <a href="<?= base_url('admin/customers');?>">
           <i class="material-icons">supervisor_account</i>
@@ -71,7 +71,7 @@
         </a>
       </li>
       
-      <li id="requests">
+      <li id="payments">
         <a href="<?= base_url('admin/payments');?>">
           <i class="material-icons">monetization_on</i>
           <span>Online Payments</span>
@@ -92,7 +92,7 @@
           </li>
         </ul>
       </li>
-                        
+        -->                
       <li id="activity">
         <a href="<?= base_url('admin/activity');?>">
           <i class="material-icons">flag</i>
