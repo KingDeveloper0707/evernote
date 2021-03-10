@@ -4,6 +4,10 @@
 <!-- Left Sidebar -->
 <aside id="leftsidebar" class="sidebar">
   <!-- User Info -->
+  <div class="sidebar-logo">
+    <a class="sidebar-logo-link" href="<?= base_url('admin/dashboard');?>"><img src="<?php echo base_url('public/images/brain_logo.png');?>"/></a>
+  </div>
+  
   <div class="user-info">
     <div class="image">
       <img src="<?= base_url()?>public/images/user.png" width="48" height="48" alt="User" />
