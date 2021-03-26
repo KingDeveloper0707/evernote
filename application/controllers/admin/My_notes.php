@@ -12,7 +12,7 @@ class My_notes extends MY_Controller {
 		$data['active_users'] = $this->notes_model->get_active_users();
 		$data['all_requests'] = $this->notes_model->get_all_requests();
 		$data['today_requests'] = $this->notes_model->get_today_requests();
-		$data['title'] = 'Dashboard';
+		$data['title'] = 'My_Notes';
 		$data['view'] = 'admin/my_notes/my_notes';
 		$this->load->view('layout', $data);
 	}
