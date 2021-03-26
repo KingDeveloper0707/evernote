@@ -92,6 +92,11 @@
                             <input type="submit" name="submit" id="submit" class="btn btn-block btn-success waves-effect" value="Submit">
                         </div>
                     </div>
+
+                    <div class="m-t-25 align-center">
+                        <a href="<?= base_url('auth/register'); ?>">You have no account?</a>
+                    </div>
+
                 <?php echo form_close(); ?>
             </div>
         </div>

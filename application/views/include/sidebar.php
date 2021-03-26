@@ -5,9 +5,10 @@
 <aside id="leftsidebar" class="sidebar">
   <!-- User Info -->
   <div class="sidebar-logo">
-    <a class="sidebar-logo-link" href="<?= base_url('admin/dashboard');?>"><img src="<?php echo base_url('public/images/brain_logo.png');?>"/></a>
+    <a class="sidebar-logo-link" href="<?= base_url('admin/my_notes');?>"><img src="<?php echo base_url('public/images/brain_logo.png');?>"/></a>
   </div>
   
+  <!--
   <div class="user-info">
     <div class="image">
       <img src="<?= base_url()?>public/images/user.png" width="48" height="48" alt="User" />
@@ -25,11 +26,65 @@
       </div>
     </div>
   </div>
+
+  -->
   <!-- #User Info -->
   <!-- Menu -->
   <div class="menu">
-    <ul class="list">
-      <li class="header">MAIN NAVIGATION</li>
+    <ul class="list side_menu_bar_wrap">
+
+     
+      
+      <li id="my_notes">
+        <a href="<?= base_url('admin/my_notes');?>">
+          <i class="material-icons">add</i>
+          <span>YOUR NOTES</span>
+        </a>
+      </li> 
+
+      <li id="find_notes">
+        <a href="<?= base_url('admin/find_notes');?>">
+          <i class="material-icons">search</i>
+          <span>FIND A NOTE</span>
+        </a>
+      </li> 
+
+      <li id="profile">
+        <a href="<?= base_url('admin/profile'); ?>">
+          <i class="material-icons">person</i>
+          <span>PROFILE</span>
+        </a>
+      </li> 
+
+      <li id="general_settings">
+        <a href="<?= base_url('admin/general_settings');?>">
+          <i class="material-icons">settings</i>
+          <span>ADMIN</span>
+        </a>
+      </li>
+
+      <li id="log_out">
+        <a href="<?= base_url('auth/logout');?>">
+          <span>LOGOUT</span>
+        </a>
+      </li>
+
+
+      <li id="templates">
+        <a href="javascript:void(0);" class="menu-toggle">
+          <i class="material-icons">email</i>
+          <span>Email Templates</span>
+        </a>
+        <ul class="ml-menu">
+          <li id="request">
+            <a href="<?= base_url('admin/templates/request'); ?>">Request Form</a>
+          </li>        
+          <li id="payment">
+            <a href="<?= base_url('admin/templates/payment'); ?>">Online Payment Form</a>
+          </li>
+        </ul>
+      </li>
+<!--
       <li id="dashboard">
         <a href="<?= base_url('admin/dashboard');?>">
           <i class="material-icons">home</i>
@@ -56,7 +111,7 @@
           </li>
         </ul>
       </li>
-      <!--
+     
       <li id="customers">
         <a href="<?= base_url('admin/customers');?>">
           <i class="material-icons">supervisor_account</i>
@@ -92,7 +147,7 @@
           </li>
         </ul>
       </li>
-        -->                
+                     
       <li id="activity">
         <a href="<?= base_url('admin/activity');?>">
           <i class="material-icons">flag</i>
@@ -106,7 +161,7 @@
           <span>Settings</span>
         </a>
       </li>
-
+    -->
     </ul>
   </div>
   <!-- #Menu -->

@@ -2,13 +2,13 @@
   background-color: #F44336; 
   
   background-color: #1A1A1A;
-  height: 70px;
+  height: 74px;
 }
 
 .theme-red .navbar-brand {
   color: #fff; 
-  margin-left: 0 ! important;
-  margin-top: 4px ! important;
+  margin-left: 20px ! important;
+  margin-top: 10px ! important;
 }
   .theme-red .navbar-brand:hover {
     color: #fff; }

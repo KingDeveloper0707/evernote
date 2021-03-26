@@ -12,7 +12,7 @@ class Auth extends CI_Controller {
 	public function index(){
 		if($this->session->has_userdata('is_admin_login'))
 		{
-			redirect('admin/dashboard');
+			redirect('admin/my_notes');
 		}
 		if($this->session->has_userdata('is_user_login'))
 		{
@@ -68,7 +68,7 @@ class Auth extends CI_Controller {
 						// Add User Activity
 						$this->activity_model->add(4);
 
-						redirect(base_url('admin/dashboard'), 'refresh');
+						redirect(base_url('admin/my_notes'), 'refresh');
 					//}
 					/*
 					if ($result['is_admin'] == 0){

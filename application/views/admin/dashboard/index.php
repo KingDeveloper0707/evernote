@@ -1,3 +1,5 @@
+<li id=""><a href="<?= base_url('auth/logout'); ?>"><i class="material-icons">input</i>Sign Out</a></li>
+
 <div class="container-fluid">
     <div class="block-header">
         <h2>DASHBOARD</h2>
