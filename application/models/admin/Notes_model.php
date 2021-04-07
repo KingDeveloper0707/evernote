@@ -1,25 +1,52 @@
 <?php
 	class Notes_model extends CI_Model{
+	
+		//---------------------------------------------------
+		// get all notes with id for server-side datatable processing (ajax based)
+		public function get_all_notes_by_id($id){
+			
+			$this->db->where('user_id', $id);
+			$this->db->order_by('created_at', 'DESC');
+			$query = $this->db->get('ci_templates');
+			return $result = $query->result_array();
+		}
 
-		public function get_all_customers(){
-			return $this->db->count_all('ci_customers');
-		}
-		public function get_active_users(){
-			$this->db->where('is_active', 1);
-			return $this->db->count_all_results('ci_users');
-		}
-		public function get_all_requests(){
-			return $this->db->count_all('ci_requests');
-		}
-		
-		public function get_today_requests(){
-			$first_date = date('Y-m-d').' 00:00:00';
-			$second_date = date('Y-m-d').' 23:59:59';
-			$this->db->where('created_at >=', $first_date);
-			$this->db->where('created_at <=', $second_date);
 
-			return $this->db->count_all_results('ci_requests');
+		// get last notes with id for server-side datatable processing (ajax based)
+		public function get_last_notes_by_id($id){
+			
+			$this->db->where('user_id', $id);
+			$this->db->order_by('created_at', 'DESC');
+			$query = $this->db->get('ci_templates');
+			$ret = $query->row();
+			return $ret;
 		}
+
+
+		// get user info by id
+		public function get_user_info_by_id($id){
+			
+			$this->db->where('id', $id);			
+			$query = $this->db->get('ci_users');
+			
+			return $result = $query->row_array();
+		}
+
+
+		// Get user detial by ID
+		public function get_template($id){
+			$query = $this->db->get_where('ci_templates', array('id' => $id));
+			return $result = $query->row_array();
+		}
+
+
+		//Update Notes table
+		public function edit_template($data, $id){
+			$this->db->where('id', $id);
+			$this->db->update('ci_templates', $data);
+			return true;
+		}
+
 	}
 
 ?>

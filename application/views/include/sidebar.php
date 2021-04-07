@@ -84,7 +84,7 @@
           </li>
         </ul>
       </li>
-<!--
+
       <li id="dashboard">
         <a href="<?= base_url('admin/dashboard');?>">
           <i class="material-icons">home</i>
@@ -161,7 +161,7 @@
           <span>Settings</span>
         </a>
       </li>
-    -->
+    
     </ul>
   </div>
   <!-- #Menu -->

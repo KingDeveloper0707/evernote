@@ -60,7 +60,7 @@ class Auth extends CI_Controller {
 						$admin_data = array(
 							'admin_id' => $result['id'],
 							'name' => $result['firstname'],
-							'is_admin_login' => TRUE, 
+							'is_admin_login' => $result['is_admin'], 
 							'role' => $result['role']
 						);
 						$this->session->set_userdata($admin_data);

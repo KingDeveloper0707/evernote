@@ -8227,6 +8227,8 @@ tr.unread {
   position: absolute;
   width: 100%;
   top: -70px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .search_wrap {
@@ -8268,6 +8270,101 @@ tr.unread {
   text-decoration: none ! important;
 }
 
+.create-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid black;
+  font-size: 11px;
+  font-family: inter;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s all;
+}
+
+.create-note:hover {
+  color: white;
+  background: black;
+}
+
+.create-note-right {
+  background: black;
+  color: white;
+  height: 24px;
+  width: 24px;
+  transition: 0.3s all;
+}
+
+
+.create-note:hover .create-note-right {
+  background: white;
+  color: black;
+}
+
+.dataTables_wrapper .dataTables_filter input::-webkit-search-cancel-button {
+  -webkit-appearance: button !important;
+}
+
+
+.show_create_date {
+  font-size: 11px;
+  color: #A8A8A8;
+  margin-bottom: 10px;
+}
+
+.show_note_title {
+  font-size: 14px;
+  color: black;
+  margin-bottom: 10px;
+}
+
+
+.table-hover > tbody > tr:hover {
+  background-color: #eeecec;
+}
+
+
+table.dataTable tbody tr.selected_tr {
+  color: white !important;
+  background-color: #eeeeee !important;
+}
+
+
+.note-details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: normal;
+  border-bottom: 1px solid #ECECEC;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.left_title {
+    font-size: 11px;
+    color: #B5B5B5;
+    width: 100px;
+    line-height: 1.2em;
+}
+
+.right_title {
+  font-size: 24px;
+  color: black;
+  line-height: 1.2em;
+  width: calc(100% - 100px);
+}
+
+.right_title_middle {
+    font-size: 11px;
+    color: black;
+    line-height: 1.2em;
+}
+
+
+.note_input {
+  width: 100%;
+  border: none;
+}
 
 @media (max-width: 1170px) {
   .theme-red .navbar {
