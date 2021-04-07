@@ -5,7 +5,8 @@
 		// get all notes with id for server-side datatable processing (ajax based)
 		public function get_all_notes_by_id($id){
 			
-			$this->db->where('user_id', $id);
+			$array = array('user_id' => $id, 'is_active' => 1);
+			$this->db->where($array);
 			$this->db->order_by('created_at', 'DESC');
 			$query = $this->db->get('ci_templates');
 			return $result = $query->result_array();
@@ -15,7 +16,8 @@
 		// get last notes with id for server-side datatable processing (ajax based)
 		public function get_last_notes_by_id($id){
 			
-			$this->db->where('user_id', $id);
+			$array = array('user_id' => $id, 'is_active' => 1);
+			$this->db->where($array);
 			$this->db->order_by('created_at', 'DESC');
 			$query = $this->db->get('ci_templates');
 			$ret = $query->row();
@@ -47,6 +49,12 @@
 			return true;
 		}
 
+		//Insert notes   return $this->db->insert('news', $data);
+		public function insert_template($data){
+			$this->db->insert('ci_templates', $data);
+			
+			return true;
+		}
 	}
 
 ?>

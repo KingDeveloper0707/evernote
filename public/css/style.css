@@ -8366,6 +8366,10 @@ table.dataTable tbody tr.selected_tr {
   border: none;
 }
 
+.note_left_id_hide, .note_left_content_hide, .note_left_userid_hide, .note_left_tags_hide {
+  display: none;
+}
+
 @media (max-width: 1170px) {
   .theme-red .navbar {
     display: inline-block;

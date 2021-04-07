@@ -52,10 +52,15 @@
                     </ul>
                 </div>
                 <div class="body">
-                   
-                  <div class="create-note">
-                    <div class="create-note-left">CREATE A NOTE</div> <div class="create-note-right"><i class="material-icons">add</i></div>
-                  </div>
+                  <?php echo form_open(base_url('admin/my_notes/create_notes'), 'id="create_note_form"')?> 
+                    <div class="create-note">
+                    
+                      <div class="create-note-left">CREATE A NOTE</div> <div class="create-note-right"><i class="material-icons">add</i></div>
+                      
+                    
+                    </div>
+                    <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect new_create_notes" style="display: none;">
+                  <?php echo form_close();?>
 
                   <div class="table-responsive">
                     <table id="note_datatable" class="table table-bordered table-striped table-hover dataTable">
@@ -64,7 +69,11 @@
                           <th>Notes Name</th>
                           <th>Updated</th>
                           <th>Created</th>
-                          <th>Tags</th>                         
+                          <th>Tags</th>  
+                          <th>ID</th> 
+                          <th>Content</th> 
+                          <th>User_ID</th>  
+                          <th>Hide_Tags</th>                        
                         </tr>
                       </thead>
                       
@@ -137,7 +146,7 @@
                       </div>
                       <div class="right_title">
                         
-                        <input type="text" id="subject" name="subject" value="<?= $note_data->subject; ?>" class="note_input">
+                        <input type="text" id="subject" name="subject" value="<?= $note_data->subject; ?>" placeholder="Enter your title here…." class="note_input">
                       </div>
                     </div>
 
@@ -145,7 +154,7 @@
                       <div class="left_title">
                         AUTHOR
                       </div>
-                      <div class="right_title_middle">
+                      <div class="right_title_middle right_title_name">
                         <?php echo $user_data['username']; ?>                     
                       </div>
                     </div>
@@ -154,7 +163,7 @@
                       <div class="left_title">
                         DATE
                       </div>
-                      <div class="right_title_middle">
+                      <div class="right_title_middle right_title_date">
                         <?php  echo $note_data->created_at;  ?>
                       </div>
                     </div>
@@ -163,7 +172,7 @@
                       <div class="left_title">
                         TAGS
                       </div>
-                      <div class="right_title_middle">
+                      <div class="right_title_middle right_title_tags">
                         <?php  echo $note_data->tags;  ?>
                       </div>
                     </div>
@@ -259,25 +268,69 @@ var note_datatable = $('#note_datatable').DataTable( {
       "columnDefs": [
             {
                 "targets": [ 0 ],
+                "orderable": true,
                 "visible": true
             },
             {
                 "targets": [ 1 ],
                 "visible": false,
+                "orderable": true,
                 "searchable": false
             },
             {
                 "targets": [ 2 ],
                 "visible": false,
+                "orderable": true,
                 "searchable": false
             },
             {
                 "targets": [ 3 ],
                 "visible": false,
+                "orderable": true,
+                "searchable": false
+            },
+            {
+                "targets": [ 4 ],
+                "visible": true,
+                "orderable": true,
+                "className": "note_left_id_hide",
+                "searchable": false
+            },
+            {
+                "targets": [ 5 ],
+                "visible": true,
+                "orderable": true,
+                "className": "note_left_content_hide",
+                "searchable": false
+            },
+            {
+                "targets": [ 6 ],
+                "visible": true,
+                "orderable": true,
+                "className": "note_left_userid_hide",
+                "searchable": false
+            },
+            {
+                "targets": [ 7 ],
+                "visible": true,
+                "orderable": true,
+                "className": "note_left_tags_hide",
                 "searchable": false
             }
         ]
 });
+
+
+
+
+    $(".create-note").on( "click", function() {
+
+  // $(".new_create_notes").trigger("click");
+  
+    //$("#create_note_form").submit();
+    $(".new_create_notes").trigger('click');
+    console.log("here");
+  });
 
 
 
@@ -293,6 +346,40 @@ $( "#note_datatable tbody" ).on( "click", "tr", function() {
   });
 
   $(this).addClass("selected_tr");
+
+
+
+  //Replace Editor contents
+  var editor1 = CKEDITOR.instances.ckeditor; //fck is just my instance name you will need to replace that with yours
+
+  var edata = editor1.getData();
+  
+  
+  var replaced_text = $(this).find(".note_left_content_hide").html(); // you could also use a regex in the replace 
+
+  if (edata != replaced_text) {
+    CKEDITOR.instances.ckeditor.setData( replaced_text );
+  }
+  //alert(replaced_text);
+  
+
+  var replaced_title = $(this).find(".show_note_title").text();
+  if (replaced_title == "Untitled") {
+    $("#subject").val("");
+  }else {
+    $("#subject").val(replaced_title);
+  }
+  
+  
+  var replaced_date = $(this).find(".show_create_date").text();
+  $(".right_title_date").text(replaced_date);
+
+  var replaced_tags = $(this).find(".note_left_tags_hide").text();
+  $(".right_title_tags").text(replaced_tags);
+
+  var replaced_id = $(this).find(".note_left_id_hide").text();
+  $("#curID").val(replaced_id);
+  
 
 });
 
@@ -351,6 +438,7 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
 //CKEditor
 CKEDITOR.replace('ckeditor');
 CKEDITOR.config.height = 400;
+
 
 
 

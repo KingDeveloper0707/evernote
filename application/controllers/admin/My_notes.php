@@ -34,11 +34,22 @@
 
 				foreach ($records as $row)
 				{
+					if ($row['subject'] == ""){
+						$current_title = "Untitled";
+					}else{
+						$current_title = $row['subject'];
+					}
+					
+
 						$data[] = array(
-							'<div class="show_create_date">'.$row['created_at'].'</div><div class="show_note_title">'.$row['subject'].'</div>',
+							'<div class="show_create_date">'.$row['created_at'].'</div><div class="show_note_title">'.$current_title.'</div>',
 							
 							$row['created_at'],
 							$row['updated_at'],
+							$row['tags'],
+							$row['id'],
+							$row['content'],
+							$row['user_id'],
 							$row['tags'],
 						);
 					
@@ -54,8 +65,8 @@
 			//---update notes
 			public function update_notes () {
 				if($this->input->post('submit')){
-					$this->form_validation->set_rules('subject', 'Subject', 'trim|required');
-					$this->form_validation->set_rules('content', 'Content', 'required');
+					//$this->form_validation->set_rules('subject', 'Subject', 'trim|required');
+					//$this->form_validation->set_rules('content', 'Content', 'required');
 					$this->form_validation->set_rules('curid', 'Curid', 'required');
 
 					if ($this->form_validation->run() == FALSE) {
@@ -106,6 +117,33 @@
 				}
 			}
 		
+
+			//---Create notes
+			public function create_notes () {
+				if($this->input->post('submit')){
+					
+					$id = $this->session->userdata('admin_id');
+
+					
+						$data = array(
+							'subject' => "",
+							'content' => "",
+							'created_at' => date('Y-m-d H:i:s'),
+							'updated_at' => date('Y-m-d H:i:s'),
+							'user_id' => $id,
+							'tags' => "",
+							'is_active' => 1,
+
+						);
+						// Add User Activity
+						$this->activity_model->add(1);
+						$this->notes_model->insert_template($data);
+	
+						$this->session->set_flashdata('msg', 'Template has been updated successfully!');
+						redirect(base_url('admin/my_notes/update_notes'));
+					
+					}
+			}
 	
 		
 	}
