@@ -8370,6 +8370,53 @@ table.dataTable tbody tr.selected_tr {
   display: none;
 }
 
+.table-responsive {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.row_left_small .hide_updated_notes, .row_left_small .hide_created_notes, .row_left_small .hide_tags_notes {
+  display: none;
+}
+
+.create_new_tag_btn_wrap {
+  display: flex;
+  align-items: center;
+}
+
+.create_new_tag_btn {
+    background: black;
+    color: white;
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
+#createtag {
+  height: 24px;
+  margin-right: 5px;
+  width: 80px;
+  display: none;
+}
+
+.right_title_tags {
+  display: flex;
+  align-items: center;
+}
+
+.tag_list {
+  font-size: 11px;
+  background: #C7C7C7;
+  color: white;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 5px;
+  margin-right: 5px; 
+}
+
+
 @media (max-width: 1170px) {
   .theme-red .navbar {
     display: inline-block;

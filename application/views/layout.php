@@ -43,7 +43,7 @@
 		<?php if($this->session->userdata('is_admin_login')): ?>
 			<?php include('include/sidebar.php'); ?>
 		<?php else: ?>
-			<?php include('include/user_sidebar.php'); ?>
+			<?php include('include/sidebar.php'); ?>
 		<?php endif; ?>
 		<!--left sidebar end-->
 

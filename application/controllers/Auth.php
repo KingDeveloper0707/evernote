@@ -59,6 +59,7 @@ class Auth extends CI_Controller {
 					//if($result['is_admin'] == 1){
 						$admin_data = array(
 							'admin_id' => $result['id'],
+							'username' => $result['username'],
 							'name' => $result['firstname'],
 							'is_admin_login' => $result['is_admin'], 
 							'role' => $result['role']

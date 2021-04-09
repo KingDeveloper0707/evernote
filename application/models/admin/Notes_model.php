@@ -34,6 +34,16 @@
 			return $result = $query->row_array();
 		}
 
+		//Get Tags info 
+		public function get_tags_info_by_id(){
+			
+						
+			$query = $this->db->get('ci_tags');
+			
+			return $result = $query->result_array();
+		}
+
+
 
 		// Get user detial by ID
 		public function get_template($id){
@@ -49,11 +59,28 @@
 			return true;
 		}
 
+
+		//add tagss table
+		public function insert_tags($data){
+			$this->db->insert('ci_tags', $data);
+			$new_id = $this->db->insert_id();
+			return $new_id;
+		}
+
+		//Get current tagnames
+		public function get_current_tagname($id){
+			
+			$this->db->select('tags');
+			$this->db->where('id', $id);
+			$query = $this->db->get('ci_templates');
+			return $result = $query->row();
+		}
+
 		//Insert notes   return $this->db->insert('news', $data);
 		public function insert_template($data){
 			$this->db->insert('ci_templates', $data);
-			
-			return true;
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
 		}
 	}
 

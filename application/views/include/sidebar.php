@@ -56,12 +56,14 @@
         </a>
       </li> 
 
+      <?php if($this->session->userdata('is_admin_login')): ?>
       <li id="general_settings">
         <a href="<?= base_url('admin/general_settings');?>">
           <i class="material-icons">settings</i>
           <span>ADMIN</span>
         </a>
       </li>
+      <?php endif ?>
 
       <li id="log_out">
         <a href="<?= base_url('auth/logout');?>">

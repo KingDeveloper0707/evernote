@@ -27,7 +27,7 @@
    
 
   <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 row_left">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 row_left row_left_small">
             <div class="card">
                 <div class="header">
                     <h2>
@@ -52,77 +52,34 @@
                     </ul>
                 </div>
                 <div class="body">
-                  <?php echo form_open(base_url('admin/my_notes/create_notes'), 'id="create_note_form"')?> 
+                  <?php/* echo form_open(base_url('admin/my_notes/create_notes'), 'id="create_note_form"')*/?> 
+
+                  <form class="form-horizontal" id="create_note_form" enctype='multipart/form-data'>
                     <div class="create-note">
                     
                       <div class="create-note-left">CREATE A NOTE</div> <div class="create-note-right"><i class="material-icons">add</i></div>
                       
                     
                     </div>
+                 
                     <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect new_create_notes" style="display: none;">
-                  <?php echo form_close();?>
+                  </form>   
+                  <?php /*echo form_close();*/?>
 
                   <div class="table-responsive">
                     <table id="note_datatable" class="table table-bordered table-striped table-hover dataTable">
                       <thead style="display: none;">
                         <tr>
                           <th>Notes Name</th>
-                          <th>Updated</th>
-                          <th>Created</th>
-                          <th>Tags</th>  
+                          <th class="hide_updated_notes">Updated</th>
+                          <th class="hide_created_notes">Created</th>
+                          <th class="hide_tags_notes">Tags</th>  
                           <th>ID</th> 
                           <th>Content</th> 
                           <th>User_ID</th>  
                           <th>Hide_Tags</th>                        
                         </tr>
                       </thead>
-                      
-                      <tbody>
-                          <tr>
-                              <td>
-                                <div class="show_create_date">Febraray 1, 2021</div>
-                                <div class="show_note_title">Michael Bruce</div>
-                              </td>
-                              <td>Javascript Developer</td>
-                              <td>Singapore</td>
-                              <td>29</td>
-                             
-                              
-                          </tr>
-                          <tr>
-                              <td>  
-                                <div class="show_create_date">Febraray 1, 2021</div>
-                                <div class="show_note_title">Tester</div>
-                              </td>
-                              <td>Customer Support</td>
-                              <td>New York</td>
-                              <td>27</td>
-                             
-                             
-                          </tr>
-                          <tr>
-                              <td>  
-                                <div class="show_create_date">Febraray 2, 2021</div>
-                                <div class="show_note_title">Developer</div>
-                              </td>
-                              <td>Customer Support</td>
-                              <td>New York</td>
-                              <td>27</td>
-                              
-                             
-                          </tr>
-                          <tr>
-                              <td>  
-                                <div class="show_create_date">Febraray 3, 2021</div>
-                                <div class="show_note_title">Colre</div>
-                              </td>
-                              <td>Customer Support</td>
-                              <td>New York</td>
-                              <td>20</td>
-                             
-                             
-                          </tr>
-                      </tbody>
                       
                     </table>
                   </div>
@@ -139,14 +96,15 @@
           <div class="card">
             <div class="body">
                 <div class="note-details-wrap">
-                  <?php echo form_open(base_url('admin/my_notes/update_notes'), 'class="form-horizontal"')?> 
+                  <?php/* echo form_open(base_url('admin/my_notes/update_notes'), 'class="form-horizontal"')*/?> 
+                  <form class="form-horizontal" id="update_note_form" enctype='multipart/form-data'>
                     <div class="note-details-header">
                       <div class="left_title">
                         TITLE
                       </div>
                       <div class="right_title">
                         
-                        <input type="text" id="subject" name="subject" value="<?= $note_data->subject; ?>" placeholder="Enter your title here…." class="note_input">
+                        <input type="text" id="subject" name="subject" value="<?php if ($note_data) echo $note_data->subject; ?>" placeholder="Enter your title here…." class="note_input">
                       </div>
                     </div>
 
@@ -164,7 +122,7 @@
                         DATE
                       </div>
                       <div class="right_title_middle right_title_date">
-                        <?php  echo $note_data->created_at;  ?>
+                        <?php  if ($note_data) echo $note_data->created_at;  ?>
                       </div>
                     </div>
 
@@ -173,7 +131,43 @@
                         TAGS
                       </div>
                       <div class="right_title_middle right_title_tags">
-                        <?php  echo $note_data->tags;  ?>
+                        <?php  if ($note_data){
+                          //echo $note_data->tags;
+                          $tag_list = explode(",", $note_data->tags);
+                            if(count($tag_list) > 1){
+                              foreach ($tag_list as $v) { 
+                              
+                                  ?>
+                                <div class="tag_list"> <?php
+                                
+                                  
+                                    foreach ($tags_data as $tag_data){
+                                        if ($tag_data[0] == $v){
+                                          echo $tag_data[1];
+                                        }
+                                    }
+                                    ?> </div> <?php
+
+                              }
+                            } 
+                            
+                            ?>   
+                            
+                        <?php
+                        
+                          } 
+                        
+                          
+
+                        
+                          ?>
+                      </div>
+                      <div class="create_new_tag_btn_wrap"> 
+                        
+                          <input type="text" id="createtag" class="create_tag" name="create_tag">
+                         
+                       
+                        <i class="material-icons create_new_tag_btn">add</i>
                       </div>
                     </div>
 
@@ -186,16 +180,16 @@
                             
                                   <div class="note_editor_wrap">
                                       <textarea id="ckeditor" name="content">
-                                        <?php  echo $note_data->content;  ?>
+                                        <?php  if ($note_data)echo $note_data->content;  ?>
                                       </textarea>
-                                      <input type="hidden" id="curID" name="curid" value="<?php  echo $note_data->id;  ?>">
+                                      <input type="hidden" id="curID" name="curid" value="<?php  if ($note_data)echo $note_data->id;  ?>">
                                   </div>
                             
                         
                                       
                         
                               
-                                  <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect">
+                                  <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect update_note">
                               
                                                 
                       
@@ -258,7 +252,8 @@
 
 var note_datatable = $('#note_datatable').DataTable( {
       "paging":   false,
-      "ordering": false,
+      "ordering": true,
+      "order": [[ 0, "desc" ]],
       "info":     false,
       "searchHighlight": true,
       "ajax": "<?=base_url('admin/my_notes/datatable_json')?>",
@@ -273,21 +268,24 @@ var note_datatable = $('#note_datatable').DataTable( {
             },
             {
                 "targets": [ 1 ],
-                "visible": false,
+                "visible": true,
                 "orderable": true,
-                "searchable": false
+                "searchable": false,
+                "className": "hide_updated_notes"
             },
             {
                 "targets": [ 2 ],
-                "visible": false,
+                "visible": true,
                 "orderable": true,
-                "searchable": false
+                "searchable": false,
+                "className": "hide_created_notes"
             },
             {
                 "targets": [ 3 ],
-                "visible": false,
+                "visible": true,
                 "orderable": true,
-                "searchable": false
+                "searchable": false,
+                "className": "hide_tags_notes"
             },
             {
                 "targets": [ 4 ],
@@ -323,15 +321,86 @@ var note_datatable = $('#note_datatable').DataTable( {
 
 
 
-    $(".create-note").on( "click", function() {
+  $(".create-note").on( "click", function() {
 
-  // $(".new_create_notes").trigger("click");
-  
-    //$("#create_note_form").submit();
+
     $(".new_create_notes").trigger('click');
-    console.log("here");
+   
   });
 
+
+
+  $('#create_note_form').submit(function(e){
+        	
+      e.preventDefault(); 
+          
+      var ajax_url = '<?php echo base_url();?>admin/my_notes/create_notes';
+         
+
+    
+      $.ajax({
+        type: "POST",
+        url: ajax_url,   
+        dataType: "json",
+        success: function(res) {
+          console.log("here");
+          console.log(res);
+          console.log(res['current_id']);
+
+          note_datatable.row.add([
+            '<div class="show_create_date">'+res['created_at']+'</div><div class="show_note_title">'+"Untitled"+'</div>',
+							
+            res['created_at'],
+            res['updated_at'],
+            res['tags'],
+            res['current_id'],
+            res['content'],
+            res['user_id'],
+            res['tags'],
+          ]).draw(false);
+
+          //select tr
+          $( "#note_datatable tbody tr" ).each(function( index ) {
+            var current_id = res['current_id'];
+            if ($(this).hasClass("selected_tr") ){
+              $(this).removeClass("selected_tr");
+            }
+    
+            if (current_id == $(this).find(".note_left_id_hide").text()){
+              $(this).addClass("selected_tr");
+            }
+            
+          });
+
+
+          var replaced_title = res['subject'];
+          if (replaced_title == "Untitled") {
+            $("#subject").val("");
+          }else {
+            $("#subject").val(replaced_title);
+          }
+          
+          
+          var replaced_date = res['created_at'];
+          $(".right_title_date").text(replaced_date);
+
+          var replaced_tags = res['tags'];
+          $(".right_title_tags").text(replaced_tags);
+
+          var replaced_id = res['current_id'];
+          $("#curID").val(replaced_id);
+
+          $("#subject").focus();
+          CKEDITOR.instances.ckeditor.setData("");
+          CKEDITOR.instances.ckeditor.focus();
+          
+
+         }, error: function(res) {
+          console.log('error');
+       }
+      });
+
+  });
 
 
 
@@ -374,15 +443,67 @@ $( "#note_datatable tbody" ).on( "click", "tr", function() {
   var replaced_date = $(this).find(".show_create_date").text();
   $(".right_title_date").text(replaced_date);
 
-  var replaced_tags = $(this).find(".note_left_tags_hide").text();
-  $(".right_title_tags").text(replaced_tags);
+  var replaced_tags = $(this).find(".note_left_tags_hide").html();
+  $(".right_title_tags").html(replaced_tags);
 
   var replaced_id = $(this).find(".note_left_id_hide").text();
   $("#curID").val(replaced_id);
+
+
+  $("#createtag").css("display", "none");
+
+  $("#subject").focus();
   
 
 });
 
+//create new tag click
+
+$(".create_new_tag_btn").on( "click", function() {
+
+  $("#createtag").css("display", "block");
+  $("#createtag").focus();
+
+});
+
+
+$('#createtag').keypress(function (e) {
+  if (e.which == 13) {
+    $(".update_note").trigger('click');
+   // $('form#create_tag_form').submit();
+   console.log("aaaaa");
+    return false;    //<---- Add this line
+  }
+});
+
+
+
+$('#update_note_form').submit(function(e){
+        	
+        e.preventDefault(); 
+          console.log("create_tags");
+        var ajax_url = '<?php echo base_url();?>admin/my_notes/update_notes';
+        var data = new FormData(this);
+
+       
+         $.ajax({
+           type: "POST",
+           url: ajax_url,   
+           data: data,
+           dataType: "json",
+           processData:false,
+		       contentType:false,
+           success: function(res) {
+             console.log("here");
+             console.log(res);
+             
+   
+            }, error: function(res) {
+             console.log('error');
+          }
+         });
+
+  });
 
 
 
@@ -393,15 +514,18 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
     $(".row_left").addClass("col-md-8");
     $(".row_left").removeClass("col-lg-4");
     $(".row_left").removeClass("col-md-4");
+    $(".row_left").removeClass("row_left_small");
+    $(".row_left").addClass("row_left_large");
 
     $(".row_right").addClass("col-lg-4");
     $(".row_right").addClass("col-md-4");
     $(".row_right").removeClass("col-lg-8");
     $(".row_right").removeClass("col-md-8");
 
-    note_datatable.column(1).visible(true);
-    note_datatable.column(2).visible(true);
-    note_datatable.column(3).visible(true);
+    
+   // note_datatable.column(1).visible(true);
+   // note_datatable.column(2).visible(true);
+   // note_datatable.column(3).visible(true);
 
   }else {
     
@@ -409,6 +533,8 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
     $(".row_left").removeClass("col-md-8");
     $(".row_left").addClass("col-lg-4");
     $(".row_left").addClass("col-md-4");
+    $(".row_left").removeClass("row_left_large");
+    $(".row_left").addClass("row_left_small");
 
     $(".row_right").addClass("col-lg-8");
     $(".row_right").addClass("col-md-8");
@@ -416,9 +542,9 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
     $(".row_right").removeClass("col-md-4");
 
 
-    note_datatable.column(1).visible(false);
-    note_datatable.column(2).visible(false);
-    note_datatable.column(3).visible(false);
+  //  note_datatable.column(1).visible(false);
+  //  note_datatable.column(2).visible(false);
+   // note_datatable.column(3).visible(false);
 
   }
 });
@@ -426,10 +552,7 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
 </script>
 
 
-<!-- Autosize Plugin Js -->
-<script src="<?= base_url() ?>public/plugins/autosize/autosize.js"></script> 
-<!-- Custom Js -->
-<script src="<?= base_url()?>public/js/pages/tables/jquery-datatable.js"></script>
+
 
 <!-- Ckeditor -->
 <script src="<?= base_url()?>public/plugins/ckeditor/ckeditor.js"></script>
