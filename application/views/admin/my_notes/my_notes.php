@@ -52,7 +52,7 @@
                     </ul>
                 </div>
                 <div class="body">
-                  <?php/* echo form_open(base_url('admin/my_notes/create_notes'), 'id="create_note_form"')*/?> 
+                  
 
                   <form class="form-horizontal" id="create_note_form" enctype='multipart/form-data'>
                     <div class="create-note">
@@ -64,7 +64,7 @@
                  
                     <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect new_create_notes" style="display: none;">
                   </form>   
-                  <?php /*echo form_close();*/?>
+                 
 
                   <div class="table-responsive">
                     <table id="note_datatable" class="table table-bordered table-striped table-hover dataTable">
@@ -96,7 +96,7 @@
           <div class="card">
             <div class="body">
                 <div class="note-details-wrap">
-                  <?php/* echo form_open(base_url('admin/my_notes/update_notes'), 'class="form-horizontal"')*/?> 
+                 
                   <form class="form-horizontal" id="update_note_form" enctype='multipart/form-data'>
                     <div class="note-details-header">
                       <div class="left_title">
@@ -132,9 +132,9 @@
                       </div>
                       <div class="right_title_middle right_title_tags">
                         <?php  if ($note_data){
-                          //echo $note_data->tags;
+                         
                           $tag_list = explode(",", $note_data->tags);
-                            if(count($tag_list) > 1){
+                            if(count($tag_list) > 0){
                               foreach ($tag_list as $v) { 
                                    foreach ($tags_data as $tag_data){
                                         if ($tag_data[0] == $v){
@@ -588,6 +588,9 @@ $( ".search_btn" ).on( "click", function() {
     $(".dataTables_filter input").val(search_key);
 
     note_datatable.search(search_key).draw();
+
+    $("#note_datatable tbody tr").first().trigger("click");
+
   }
  
 
@@ -600,6 +603,8 @@ $( ".close_search_btn" ).on( "click", function() {
   $(".search_field").val("");
   note_datatable.search("").draw();
   $(this).css("display","none");
+
+  $("#note_datatable tbody tr").first().trigger("click");
 
 });
 

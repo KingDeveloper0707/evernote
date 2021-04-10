@@ -160,7 +160,7 @@
 
 							$tag_list = explode(",", $current_tag_name->tags);
 							$same_tag = "";
-                            if(count($tag_list) > 1){
+                            if(count($tag_list) > 0){
                               foreach ($tag_list as $v) { 
 								if($v == $new_tag_id){
 									$same_tag = $v;
