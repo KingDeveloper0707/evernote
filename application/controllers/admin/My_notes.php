@@ -125,30 +125,38 @@
 
 						//get tags information
 						$tags_info = $this->notes_model->get_tags_info_by_id();
-						$tags_array = array();
+						
 						$i= 0;
+						
 						foreach($tags_info as $row){
-							if ($row['tagname'] == $this->input->post('create_tag') )
-								$i = $row['id'];					
-							
+							if ($row['tagname'] == $this->input->post('create_tag') ){
+								$i = $row['id'];	
+							}
 						}
 
-						if ($i == 0){
-							$tag_data = array(
-								'tagname' => $this->input->post('create_tag'),
-								'created_at' => date('Y-m-d H:i:s'),
-								'user_id' => $id,
-							);	
-							$new_tag_id = $this->notes_model->insert_tags($tag_data);
+						$new_tag_id="";
+						$send_tag_id = "";
+
+						if ($i == 0){//new tag
+							if ($this->input->post('create_tag') != "" ){
+								$tag_data = array(
+									'tagname' => $this->input->post('create_tag'),
+									'created_at' => date('Y-m-d H:i:s'),
+									'user_id' => $id,
+								);	
+								$new_tag_id = $this->notes_model->insert_tags($tag_data);
+								$send_tag_id = $new_tag_id;
+							}
+							
 						}else{
-							$new_tag_id = $i;
+							$new_tag_id = $i; //exsiting tag
 						}
 						
 						$i=0;
 						$current_tag_name = $this->notes_model->get_current_tagname($this->input->post('curid'));
 						$all_tags = "";
 						$all_tags .= $current_tag_name->tags;
-						if (strlen($all_tags) > 0){
+						if (strlen($all_tags) > 0){ //exsiting tag
 
 							$tag_list = explode(",", $current_tag_name->tags);
 							$same_tag = "";
@@ -161,28 +169,56 @@
 							}
 
 							if(strlen($same_tag) > 0){
-
+								//exsiting tag and inserted tag
 							}else{
-								$all_tags .= ",".$new_tag_id;
+								if ($new_tag_id != "")
+									$all_tags .= ",".$new_tag_id;
+									$send_tag_id = $new_tag_id;
 							}
 							
 						}else{
+							//new first tag
 							$all_tags .= $new_tag_id;
+							$send_tag_id = $new_tag_id;
 						}
 
 
 
 						$data = array(
 							'subject' => $this->input->post('subject'),
-							'content' => $this->input->post('content'),
+							'content' => $this->input->post('e_content'),
 							'updated_at' => date('Y-m-d H:i:s'),
 							'tags' =>$all_tags,
 						);
 
 						$this->notes_model->edit_template($data, $this->input->post('curid'));
-	
+						
 
-						echo json_encode($tag_data);	
+
+						//get tags information
+						$all_tags_info = $this->notes_model->get_tags_info_by_id();
+
+						//get sending tag name
+						$send_tag_name = "";
+						foreach($all_tags_info as $row){
+							if ($row['id'] == $send_tag_id ){
+								$send_tag_name = $row['tagname'];	
+							}
+						}
+
+
+						
+						$send_data = array(
+							'subject' => $this->input->post('subject'),
+							'content' => $this->input->post('e_content'),
+							'updated_at' => date('Y-m-d H:i:s'),
+							'tags' =>$all_tags,
+							'all_tag_list' => $all_tags_info,
+							'new_tag_name' =>$send_tag_name,
+						);
+						
+						
+						echo json_encode($send_data);	
 						//$this->session->set_flashdata('msg', 'Template has been updated successfully!');
 						//redirect(base_url('admin/my_notes/update_notes'));
 					}

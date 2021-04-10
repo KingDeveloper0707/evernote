@@ -8,7 +8,7 @@
 
 <div class="nav_top_bar">
   <div class="inputContainer search_wrap ">
-      <input class="Field search_field" type="text" placeholder="Search">
+      <input class="Field search_field" type="search" placeholder="Search"><i class="close_search_btn material-icons">close</i>
       
       <i class="material-icons search_btn">search</i>
   </div>
@@ -136,18 +136,12 @@
                           $tag_list = explode(",", $note_data->tags);
                             if(count($tag_list) > 1){
                               foreach ($tag_list as $v) { 
-                              
-                                  ?>
-                                <div class="tag_list"> <?php
-                                
-                                  
-                                    foreach ($tags_data as $tag_data){
+                                   foreach ($tags_data as $tag_data){
                                         if ($tag_data[0] == $v){
-                                          echo $tag_data[1];
+                                          ?><div class="tag_list"><?php echo $tag_data[1]; ?></div>
+                                          <?php 
                                         }
                                     }
-                                    ?> </div> <?php
-
                               }
                             } 
                             
@@ -485,6 +479,12 @@ $('#update_note_form').submit(function(e){
         var ajax_url = '<?php echo base_url();?>admin/my_notes/update_notes';
         var data = new FormData(this);
 
+          //Replace Editor contents
+        var editor1 = CKEDITOR.instances.ckeditor; //fck is just my instance name you will need to replace that with yours
+
+        var edata = editor1.getData();
+
+        data.append("e_content", edata);
        
          $.ajax({
            type: "POST",
@@ -494,12 +494,33 @@ $('#update_note_form').submit(function(e){
            processData:false,
 		       contentType:false,
            success: function(res) {
-             console.log("here");
+             
              console.log(res);
+             if (res['new_tag_name'] != ""){
+               var add_tag = "<div class='tag_list'>" + res['new_tag_name'];
+               add_tag = add_tag + "</div>"
+              $(".right_title_tags").append( add_tag );
+              $("#createtag").css("display", "none");
+
+              $("tr.selected_tr").find(".note_left_tags_hide").append( add_tag );
+              $("tr.selected_tr").find(".hide_tags_notes").append( add_tag );
+             }
+            
+
+              $("tr.selected_tr").find(".hide_updated_notes").text(res['updated_at']);
+
+              if(res['subject'] != "")
+                $("tr.selected_tr").find(".show_note_title").text(res['subject']);
+              else
+              $("tr.selected_tr").find(".show_note_title").text("Untitled");
+
+              $("tr.selected_tr").find(".note_left_content_hide").html(res['content']);
+
+             
              
    
             }, error: function(res) {
-             console.log('error');
+             console.log("error", res);
           }
          });
 
@@ -548,6 +569,51 @@ $( ".note_wrap_ctr_btn" ).on( "click", function() {
 
   }
 });
+
+
+
+//Search Field
+
+
+$( ".search_btn" ).on( "click", function() {
+
+  console.log("sear_text", $(".search_field").val());
+  var search_key = $(".search_field").val();
+
+  //document.getElementByClass("search_field").innerHTML = x;
+
+  if (search_key != ""){
+    $(".close_search_btn").css("display", "block");
+
+    $(".dataTables_filter input").val(search_key);
+
+    note_datatable.search(search_key).draw();
+  }
+ 
+
+});
+
+
+$( ".close_search_btn" ).on( "click", function() { 
+  $(".dataTables_filter input").val("");
+  
+  $(".search_field").val("");
+  note_datatable.search("").draw();
+  $(this).css("display","none");
+
+});
+
+
+
+$('.search_field').keypress(function (e) {
+ var key = e.which;
+ if(key == 13)  // the enter key code
+  {
+    $(".search_btn").trigger("click");
+    return false;  
+  }
+});   
+
 
 </script>
 
