@@ -126,6 +126,7 @@ class Auth extends CI_Controller {
 			}
 			else{
 				$data = array(
+					'username' => $this->input->post('username'),
 					'firstname' => $this->input->post('firstname'),
 					'lastname' => $this->input->post('lastname'),
 					'email' => $this->input->post('email'),
