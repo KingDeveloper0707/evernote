@@ -34,6 +34,17 @@
                        Your Notes
                     </h2>
                     <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">sort</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a style="pointer-events: none; color: #666;">Sort By</a></li>
+                                <li><a class="sort_menu_item" id="sort_title_notes"><i class="material-icons">south</i><i class="material-icons">north</i><span>Title</span></span></a></li>
+                                <li><a class="sort_menu_item" id="sort_updated_notes"><i class="material-icons">south</i><i class="material-icons">north</i><span>Date updated</span></span></a></li>
+                                <li><a class="sort_menu_item" id="sort_created_notes"><i class="material-icons">south</i><i class="material-icons">north</i><span>Date created</span></span></a></li>
+                            </ul>
+                        </li>
                         <li>
                             <a href="javascript:void(0);" class="view-layout-btn note_wrap_ctr_btn">
                               <i class="material-icons">table_view</i>     
@@ -71,13 +82,14 @@
                       <thead style="display: none;">
                         <tr>
                           <th>Notes Name</th>
-                          <th class="hide_updated_notes">Updated</th>
                           <th class="hide_created_notes">Created</th>
+                          <th class="hide_updated_notes">Updated</th>                          
                           <th class="hide_tags_notes">Tags</th>  
-                          <th>ID</th> 
+                          <th>note_ID</th> 
                           <th>Content</th> 
                           <th>User_ID</th>  
-                          <th>Hide_Tags</th>                        
+                          <th>Hide_Tags</th>    
+                          <th>Hide_Title</th>                        
                         </tr>
                       </thead>
                       
@@ -265,14 +277,14 @@ var note_datatable = $('#note_datatable').DataTable( {
                 "visible": true,
                 "orderable": true,
                 "searchable": false,
-                "className": "hide_updated_notes"
+                "className": "hide_created_notes"
             },
             {
                 "targets": [ 2 ],
                 "visible": true,
                 "orderable": true,
                 "searchable": false,
-                "className": "hide_created_notes"
+                "className": "hide_updated_notes"
             },
             {
                 "targets": [ 3 ],
@@ -307,6 +319,14 @@ var note_datatable = $('#note_datatable').DataTable( {
                 "visible": true,
                 "orderable": true,
                 "className": "note_left_tags_hide",
+                "searchable": false
+            }
+            ,
+            {
+                "targets": [ 8 ],
+                "visible": true,
+                "orderable": true,
+                "className": "note_left_title_hide",
                 "searchable": false
             }
         ]
@@ -351,6 +371,7 @@ var note_datatable = $('#note_datatable').DataTable( {
             res['content'],
             res['user_id'],
             res['tags'],
+            "Untitled",
           ]).draw(false);
 
           //select tr
@@ -509,10 +530,14 @@ $('#update_note_form').submit(function(e){
 
               $("tr.selected_tr").find(".hide_updated_notes").text(res['updated_at']);
 
-              if(res['subject'] != "")
+              if(res['subject'] != ""){
                 $("tr.selected_tr").find(".show_note_title").text(res['subject']);
-              else
-              $("tr.selected_tr").find(".show_note_title").text("Untitled");
+                $("tr.selected_tr").find(".note_left_title_hide").text(res['subject']);
+              }else{
+                $("tr.selected_tr").find(".show_note_title").text("Untitled");
+                $("tr.selected_tr").find(".note_left_title_hide").text("Untitled");  
+              }
+                
 
               $("tr.selected_tr").find(".note_left_content_hide").html(res['content']);
 
@@ -619,6 +644,102 @@ $('.search_field').keypress(function (e) {
   }
 });   
 
+
+
+///Setting Sort Order
+
+
+var sort_order_num = sessionStorage.getItem("sort_order_number");
+console.log("sort_num", sort_order_num);
+
+if (sort_order_num != null){
+  console.log("not null");
+  switch(sort_order_num){
+    case "0":
+      $("#sort_created_notes").addClass("selected");
+      $("#sort_created_notes").attr( "sort_order_val", 0 );
+      $("#sort_created_notes i").first().addClass("selected");
+      note_datatable.order( [ 1, 'desc' ] ).draw();
+      break;
+    case "1":
+      $("#sort_created_notes").addClass("selected");
+      $("#sort_created_notes").attr( "sort_order_val", 1 );
+      $("#sort_created_notes i").last().addClass("selected");
+      note_datatable.order( [ 1, 'asc' ] ).draw();
+      break;
+    case "2":
+      $("#sort_title_notes").addClass("selected");
+      $("#sort_title_notes").attr( "sort_order_val",  2);
+      $("#sort_title_notes i").first().addClass("selected");
+      break;
+    case "3":
+      $("#sort_title_notes").addClass("selected");
+      $("#sort_title_notes").attr( "sort_order_val", 3 );
+      $("#sort_title_notes i").last().addClass("selected");
+      break;
+    case "4":
+      $("#sort_updated_notes").addClass("selected");
+      $("#sort_updated_notes").attr( "sort_order_val", 4);
+      $("#sort_updated_notes i").first().addClass("selected");
+      break;
+    case "5":
+      $("#sort_updated_notes").addClass("selected");
+      $("#sort_updated_notes").attr( "sort_order_val", 5 );
+      $("#sort_updated_notes i").last().addClass("selected");
+      break;
+  }
+}else{
+  console.log("null");
+  
+  $("#sort_created_notes").addClass("selected");
+  $("#sort_created_notes").attr( "sort_order_val", 0 );
+  $("#sort_created_notes i").first().addClass("selected");
+  sessionStorage.setItem('sort_order_number', 0);
+}
+
+
+
+$( "#sort_created_notes" ).on( "click", function() { 
+
+  var current_order_val;
+  if ($(this).hasClass("selected")){
+    current_order_val = $(this).attr("sort_order_val");
+    console.log(current_order_val);
+    if(current_order_val == 0){
+      $(this).attr( "sort_order_val", 1 );
+      sessionStorage.setItem('sort_order_number', 1);
+      $("#sort_created_notes i").last().addClass("selected");
+      
+      if ($("#sort_created_notes i").first().hasClass("selected")){
+        $("#sort_created_notes i").first().removeClass("selected");
+      }
+
+      note_datatable.order( [ 1, 'asc' ] ).draw();
+
+    }else{
+      $(this).attr( "sort_order_val", 0 );
+      $("#sort_created_notes i").first().addClass("selected");
+
+      sessionStorage.setItem('sort_order_number', 0);
+
+      if ($("#sort_created_notes i").last().hasClass("selected")){
+        $("#sort_created_notes i").last().removeClass("selected");
+      }
+
+      note_datatable.order( [ 1, 'desc' ] ).draw();
+    }
+      
+  }
+ 
+  $( ".sort_menu_item" ).each(function( index ) {
+    if ($(this).hasClass("selected") ){
+      $(this).removeClass("selected");
+    }
+  });
+
+  $(this).addClass("selected");
+
+});
 
 </script>
 

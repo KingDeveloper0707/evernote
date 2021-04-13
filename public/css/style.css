@@ -7446,7 +7446,7 @@ fieldset[disabled] .form-control {
       background-color: transparent; }
   .dropdown-menu > li > a {
     padding: 7px 18px;
-    color: #666;
+    color: #000;
     -moz-transition: all 0.5s;
     -o-transition: all 0.5s;
     -webkit-transition: all 0.5s;
@@ -8390,7 +8390,7 @@ table.dataTable tbody tr.selected_tr {
   border: none;
 }
 
-.note_left_id_hide, .note_left_content_hide, .note_left_userid_hide, .note_left_tags_hide {
+.note_left_id_hide, .note_left_content_hide, .note_left_userid_hide, .note_left_tags_hide, .note_left_title_hide {
   display: none;
 }
 
@@ -8462,6 +8462,45 @@ table.dataTable tbody tr.selected_tr {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+
+.dropdown-menu {
+  top: 57px;
+}
+
+
+.sort_menu_item i {
+  color: #e7e6e6 ! important;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  font-size: 16px ! important;
+  margin-right: -5px ! important;
+}
+
+.sort_menu_item span{
+  margin-left: 10px;
+}
+
+.sort_menu_item.selected{
+  color: #2e6da4;
+}
+
+
+
+.sort_menu_item i {
+  color: transparent ! important;
+}
+
+.sort_menu_item.selected i {
+  color: #E7E6E4 ! important;
+}
+
+.sort_menu_item.selected i.selected {
+  color: #2e6da4 ! important;
+}
+
 
 @media (max-width: 1170px) {
   .theme-red .navbar {

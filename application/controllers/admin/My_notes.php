@@ -83,6 +83,7 @@
 							$row['content'],
 							$row['user_id'],
 							$tag_full_name,
+							$current_title,
 						);
 					
 						
