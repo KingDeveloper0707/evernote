@@ -245,7 +245,8 @@
 
 
 <script>
-
+$(document).ready(function (){
+  
   $( ".side_menu_bar_wrap li" ).each(function( index ) {
     if ($(this).hasClass("active")){
       $(this).removeClass("active");
@@ -254,14 +255,45 @@
   });
 
 
+var sort_order_num = sessionStorage.getItem("sort_order_number");
+
+var init_order_note = "";
+
+if (sort_order_num != null){
+  console.log("not null first");
+  switch(sort_order_num){
+    case "0":
+      init_order_note = [[ 0, "desc" ]];
+      break;
+    case "1":
+      init_order_note = [[ 0, "asc" ]];
+      break;
+    case "2":
+      init_order_note = [[ 8, "desc" ]];
+      break;
+    case "3":
+      init_order_note = [[ 8, "asc" ]];
+      break;
+    case "4":
+      init_order_note = [[ 2, "desc" ]];
+      break;
+    case "5":
+      init_order_note = [[ 2, "desc" ]];
+      break;
+  }
+}else{
+  init_order_note = [[ 0, "desc" ]];
+}
 
 
 var note_datatable = $('#note_datatable').DataTable( {
       "paging":   false,
       "ordering": true,
-      "order": [[ 0, "desc" ]],
+      "order": init_order_note,
       "info":     false,
       "searchHighlight": true,
+      "deferRender": true,      
+      "select": true,
       "ajax": "<?=base_url('admin/my_notes/datatable_json')?>",
       "initComplete": function( settings, json ) {
         $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
@@ -374,6 +406,9 @@ var note_datatable = $('#note_datatable').DataTable( {
             "Untitled",
           ]).draw(false);
 
+
+          //note_datatable.ajax.reload();
+
           //select tr
           $( "#note_datatable tbody tr" ).each(function( index ) {
             var current_id = res['current_id'];
@@ -409,6 +444,7 @@ var note_datatable = $('#note_datatable').DataTable( {
           CKEDITOR.instances.ckeditor.setData("");
           CKEDITOR.instances.ckeditor.focus();
           
+         
 
          }, error: function(res) {
           console.log('error');
@@ -517,6 +553,10 @@ $('#update_note_form').submit(function(e){
            success: function(res) {
              
              console.log(res);
+             var selected_element = $("tr.selected_tr");
+             selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+             var current_id = selected_element.find(".note_left_id_hide").text();
+
              if (res['new_tag_name'] != ""){
                var add_tag = "<div class='tag_list'>" + res['new_tag_name'];
                add_tag = add_tag + "</div>"
@@ -542,7 +582,22 @@ $('#update_note_form').submit(function(e){
               $("tr.selected_tr").find(".note_left_content_hide").html(res['content']);
 
              
-             
+              note_datatable.ajax.reload();
+
+              console.log(selected_element.find(".note_left_id_hide").text());
+              
+
+              setTimeout(function() {
+                $( "#note_datatable tbody tr" ).each(function( index ) {
+                if ($(this).find(".note_left_id_hide").text() == current_id ){
+                  $(this).addClass("selected_tr");
+                  console.log("same----", index);
+                }
+              });
+              }, 500);
+            
+
+              
    
             }, error: function(res) {
              console.log("error", res);
@@ -649,7 +704,7 @@ $('.search_field').keypress(function (e) {
 ///Setting Sort Order
 
 
-var sort_order_num = sessionStorage.getItem("sort_order_number");
+
 console.log("sort_num", sort_order_num);
 
 if (sort_order_num != null){
@@ -659,33 +714,49 @@ if (sort_order_num != null){
       $("#sort_created_notes").addClass("selected");
       $("#sort_created_notes").attr( "sort_order_val", 0 );
       $("#sort_created_notes i").first().addClass("selected");
+      sessionStorage.setItem('sort_order_number', 0);
       note_datatable.order( [ 1, 'desc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
     case "1":
       $("#sort_created_notes").addClass("selected");
       $("#sort_created_notes").attr( "sort_order_val", 1 );
       $("#sort_created_notes i").last().addClass("selected");
+      sessionStorage.setItem('sort_order_number', 1);
       note_datatable.order( [ 1, 'asc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
     case "2":
       $("#sort_title_notes").addClass("selected");
       $("#sort_title_notes").attr( "sort_order_val",  2);
+      sessionStorage.setItem('sort_order_number', 2);
       $("#sort_title_notes i").first().addClass("selected");
+      note_datatable.order( [ 8, 'desc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
     case "3":
       $("#sort_title_notes").addClass("selected");
       $("#sort_title_notes").attr( "sort_order_val", 3 );
+      sessionStorage.setItem('sort_order_number', 3);
       $("#sort_title_notes i").last().addClass("selected");
+      note_datatable.order( [ 8, 'asc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
     case "4":
       $("#sort_updated_notes").addClass("selected");
       $("#sort_updated_notes").attr( "sort_order_val", 4);
+      sessionStorage.setItem('sort_order_number', 4);
       $("#sort_updated_notes i").first().addClass("selected");
+      note_datatable.order( [ 2, 'desc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
     case "5":
       $("#sort_updated_notes").addClass("selected");
       $("#sort_updated_notes").attr( "sort_order_val", 5 );
+      sessionStorage.setItem('sort_order_number', 5);
       $("#sort_updated_notes i").last().addClass("selected");
+      note_datatable.order( [ 2, 'asc' ] ).draw();
+      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
       break;
   }
 }else{
@@ -713,7 +784,7 @@ $( "#sort_created_notes" ).on( "click", function() {
       if ($("#sort_created_notes i").first().hasClass("selected")){
         $("#sort_created_notes i").first().removeClass("selected");
       }
-
+      note_datatable.ajax.reload();
       note_datatable.order( [ 1, 'asc' ] ).draw();
 
     }else{
@@ -725,10 +796,21 @@ $( "#sort_created_notes" ).on( "click", function() {
       if ($("#sort_created_notes i").last().hasClass("selected")){
         $("#sort_created_notes i").last().removeClass("selected");
       }
-
+      note_datatable.ajax.reload();
       note_datatable.order( [ 1, 'desc' ] ).draw();
     }
       
+  }else {
+    $(this).attr( "sort_order_val", 0 );
+      $("#sort_created_notes i").first().addClass("selected");
+
+      sessionStorage.setItem('sort_order_number', 0);
+
+      if ($("#sort_created_notes i").last().hasClass("selected")){
+        $("#sort_created_notes i").last().removeClass("selected");
+      }
+      note_datatable.ajax.reload();
+      note_datatable.order( [ 1, 'desc' ] ).draw();
   }
  
   $( ".sort_menu_item" ).each(function( index ) {
@@ -739,8 +821,170 @@ $( "#sort_created_notes" ).on( "click", function() {
 
   $(this).addClass("selected");
 
+  var selected_element = $("tr.selected_tr");
+  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+  var current_id = selected_element.find(".note_left_id_hide").text();
+
+
+  setTimeout(function() {
+    $( "#note_datatable tbody tr" ).each(function( index ) {
+    if ($(this).find(".note_left_id_hide").text() == current_id ){
+      $(this).addClass("selected_tr");
+      console.log("same----", index);
+    }
+  });
+  }, 500);
+
+
+
 });
 
+
+
+
+$( "#sort_updated_notes" ).on( "click", function() { 
+
+var current_order_val;
+if ($(this).hasClass("selected")){
+  current_order_val = $(this).attr("sort_order_val");
+  console.log(current_order_val);
+  if(current_order_val == 4){
+    $(this).attr( "sort_order_val", 5 );
+    sessionStorage.setItem('sort_order_number', 5);
+    $("#sort_updated_notes i").last().addClass("selected");
+    
+    if ($("#sort_updated_notes i").first().hasClass("selected")){
+      $("#sort_updated_notes i").first().removeClass("selected");
+    }
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 2, 'asc' ] ).draw();
+
+  }else{
+    $(this).attr( "sort_order_val", 4 );
+    $("#sort_updated_notes i").first().addClass("selected");
+
+    sessionStorage.setItem('sort_order_number', 4);
+
+    if ($("#sort_updated_notes i").last().hasClass("selected")){
+      $("#sort_updated_notes i").last().removeClass("selected");
+    }
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 2, 'desc' ] ).draw();
+  }
+    
+}else {
+  $(this).attr( "sort_order_val", 4 );
+    $("#sort_updated_notes i").first().addClass("selected");
+
+    sessionStorage.setItem('sort_order_number', 4);
+
+    if ($("#sort_updated_notes i").last().hasClass("selected")){
+      $("#sort_updated_notes i").last().removeClass("selected");
+    }
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 2, 'desc' ] ).draw();
+}
+
+$( ".sort_menu_item" ).each(function( index ) {
+  if ($(this).hasClass("selected") ){
+    $(this).removeClass("selected");
+  }
+});
+
+$(this).addClass("selected");
+
+var selected_element = $("tr.selected_tr");
+  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+  var current_id = selected_element.find(".note_left_id_hide").text();
+
+
+  setTimeout(function() {
+    $( "#note_datatable tbody tr" ).each(function( index ) {
+    if ($(this).find(".note_left_id_hide").text() == current_id ){
+      $(this).addClass("selected_tr");
+      console.log("same----", index);
+    }
+  });
+  }, 500);
+
+
+
+});
+
+
+$( "#sort_title_notes" ).on( "click", function() { 
+
+var current_order_val;
+if ($(this).hasClass("selected")){
+  current_order_val = $(this).attr("sort_order_val");
+  console.log(current_order_val);
+  if(current_order_val == 2){
+    $(this).attr( "sort_order_val", 3 );
+    sessionStorage.setItem('sort_order_number', 3);
+    $("#sort_title_notes i").last().addClass("selected");
+    
+    if ($("#sort_title_notes i").first().hasClass("selected")){
+      $("#sort_title_notes i").first().removeClass("selected");
+    }
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 8, 'asc' ] ).draw();
+
+  }else{
+    $(this).attr( "sort_order_val", 2 );
+    $("#sort_title_notes i").first().addClass("selected");
+
+    sessionStorage.setItem('sort_order_number', 2);
+
+    if ($("#sort_title_notes i").last().hasClass("selected")){
+      $("#sort_title_notes i").last().removeClass("selected");
+    }
+
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 8, 'desc' ] ).draw();
+  }
+    
+}else {
+  $(this).attr( "sort_order_val", 2 );
+    $("#sort_title_notes i").first().addClass("selected");
+
+    sessionStorage.setItem('sort_order_number', 2);
+
+    if ($("#sort_title_notes i").last().hasClass("selected")){
+      $("#sort_title_notes i").last().removeClass("selected");
+    }
+
+    note_datatable.ajax.reload();
+    note_datatable.order( [ 8, 'desc' ] ).draw();
+}
+
+$( ".sort_menu_item" ).each(function( index ) {
+  if ($(this).hasClass("selected") ){
+    $(this).removeClass("selected");
+  }
+});
+
+$(this).addClass("selected");
+
+var selected_element = $("tr.selected_tr");
+  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+  var current_id = selected_element.find(".note_left_id_hide").text();
+
+
+  setTimeout(function() {
+    $( "#note_datatable tbody tr" ).each(function( index ) {
+    if ($(this).find(".note_left_id_hide").text() == current_id ){
+      $(this).addClass("selected_tr");
+      console.log("same----", index);
+    }
+  });
+  }, 500);
+
+  
+
+});
+
+
+});
 </script>
 
 
