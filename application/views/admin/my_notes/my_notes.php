@@ -1,7 +1,7 @@
 <!-- JQuery DataTable Css -->
 <link href="<?= base_url()?>public/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">  
 <!-- Bootstrap Select Css -->
-<link href="<?= base_url() ?>public/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+<link href="<?= base_url() ?>public/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
 
 <link href="<?= base_url()?>public/plugins/jquery-datatable/skin/bootstrap/css/dataTables.searchHighlight.css" rel="stylesheet">  
 
@@ -45,25 +45,56 @@
                                 <li><a class="sort_menu_item" id="sort_created_notes"><i class="material-icons">south</i><i class="material-icons">north</i><span>Date created</span></span></a></li>
                             </ul>
                         </li>
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">filter_alt</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right dropdown_select">
+                                <li><a style="pointer-events: none; color: #666;">Add Filters</a></li>
+                                <li class="select_menu_wrap">
+                                  
+                                    <div class="filter_tags_wrap">
+                                      <select class="select_filter_tags"  id="my_select_filter_tags" multiple="multiple">
+                                            <?php foreach ($tags_data as $tag_data){
+                                                              
+                                                                ?>
+
+                                                                <option value="<?php echo $tag_data[1]; ?>"><?php echo $tag_data[1]; ?></option>
+                                                                
+                                                                <?php 
+                                                              
+                                                          }
+                                                          ?>                                      
+                                        </select>
+                                        <div class="filter_tags_reset"><i class="material-icons">close</i></div>
+
+                                    </div>
+                                  
+                                  
+                                
+                                </li>
+                                  
+                                
+                            </ul>
+                        </li>
+                        
+                                   
                         <li>
                             <a href="javascript:void(0);" class="view-layout-btn note_wrap_ctr_btn">
                               <i class="material-icons">table_view</i>     
                             </a>
-                        </li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li><a href="javascript:void(0);">Action</a></li>
-                                <li><a href="javascript:void(0);">Another action</a></li>
-                                <li><a href="javascript:void(0);">Something else here</a></li>
-                            </ul>
-                        </li>
+                        </li>                        
                     </ul>
                 </div>
                 <div class="body">
+                                   
                   
+                  <div class="show_filter_wrap">
+
+
+                  </div>
+                  
+                                
 
                   <form class="form-horizontal" id="create_note_form" enctype='multipart/form-data'>
                     <div class="create-note">
@@ -178,11 +209,6 @@
                     </div>
 
                     <div class="note_editor">
-                      
-                          
-                          
-                        
-                            
                             
                                   <div class="note_editor_wrap">
                                       <textarea id="ckeditor" name="content">
@@ -190,15 +216,9 @@
                                       </textarea>
                                       <input type="hidden" id="curID" name="curid" value="<?php  if ($note_data)echo $note_data->id;  ?>">
                                   </div>
-                            
-                        
-                                      
-                        
                               
-                                  <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect update_note">
-                              
-                                                
-                      
+                                  <input type="submit" name="submit" value="UPDATE" class="btn btn-primary m-t-15 waves-effect update_note" style="display: none;">
+                        
                     </div>
                   <?php echo form_close();?>
                 </div>
@@ -221,10 +241,7 @@
 
 
 
-<!-- Wait Me Plugin Js -->
-<script src="<?= base_url()?>public/plugins/waitme/waitMe.js"></script>
-<!-- Custom Js -->
-<script src="<?= base_url()?>public/js/pages/cards/colored.js"></script>
+
 
 
 
@@ -237,16 +254,268 @@
 <script src="<?= base_url()?>public/plugins/jquery-datatable/skin/bootstrap/js/jquery.highlight.js"></script>
 
 
+<script src="<?= base_url() ?>public/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js" ></script>
 
 
 
 
+<script type="text/javascript">
+    $(document).ready(function() {
+
+      //rest all select function
+      function clear_selected_filter_tags(){
+        if($("#note_datatable tbody").hasClass("added_filter_body")){
+            $("#note_datatable tbody").removeClass("added_filter_body");
+        }
+      
+        $( "#note_datatable tbody tr" ).each(function( index ) {
+            $(this).removeClass("added_filter_row");
+            $(this).removeAttr("filter_tags");
+        });
+
+        $(".filter_tags_reset").css("visibility", "hidden");
+
+      };
+
+      // uncheck select function
+      function clear_select_one_filter_tags(){
+          var selected_tag_list = "";
+          selected_tag_list = $('#my_select_filter_tags').val(); 
+
+          if (selected_tag_list != null){
+            $( "#note_datatable tbody tr" ).each(function( index ) {
+
+              if ($(this).attr("filter_tags") == null){
+                return;
+              }
+
+            // console.log("now");
+            
+
+              var get_current_tags = $(this).attr("filter_tags");
+            // console.log("val",get_current_tags);
+              var current_tags_list;
+              current_tags_list = get_current_tags.split(",");
+
+              
+
+
+              
+
+              if(selected_tag_list.every(r => current_tags_list.includes(r))){
+                
+                $(this).addClass("added_filter_row");
+                $(this).attr("filter_tags", selected_tag_list);
+
+              }else{
+                //console.log('Did not find all of', selected_tag_list, 'in', current_tags_list);
+              }
+
+            });
+
+          }else{
+           
+            clear_selected_filter_tags();
+          
+        }
+      };
+
+      
+
+      //Reset all multiselect
+      $(".filter_tags_reset").on( "click", function() {
+
+        $("#my_select_filter_tags").multiselect("clearSelection");
+        clear_selected_filter_tags();
+        
+        $( ".show_filter_wrap .show_filters" ).each(function( index ) {
+          $(this).remove();
+        });
+
+
+        $(this).css("visibility", "hidden");
+
+      });
+
+      //reset selected multiselect
+
+      $(document).on('click', '.close_filter_btn', function(){ 
+          // Your Code
+         
+          $('#my_select_filter_tags').multiselect('deselect', $(this).attr("data_filter"));
+          clear_select_one_filter_tags();
+          $(this).parent().remove();
+
+          
+      });
+      
+     
 
 
 
-<script>
-$(document).ready(function (){
+      $('#my_select_filter_tags').multiselect({
+            onChange: function(option, checked, select) {
+
+              
+
+              if (checked){
+
+                if (!$("#note_datatable tbody").hasClass("added_filter_body")){
+                  $( "#note_datatable tbody tr" ).each(function( index ) {
+                                   
+                      $(this).children(".hide_tags_notes").children(".tag_list").each(function( index ) {
+                      
+                        if ($(option).val() == $(this).text()){
+    
+                          $(this).parent().parent().addClass("added_filter_row");
+    
+                          if ($(this).parent().parent().attr("filter_tags") != null){
+                            var  new_add_tags = "";
+                            new_add_tags = $(this).parent().parent().attr("filter_tags");
+                            new_add_tags = new_add_tags + ",";
+                            new_add_tags = new_add_tags + $(this).text();
+                            $(this).parent().parent().attr("filter_tags", new_add_tags);
+    
+                          }else {
+                            $(this).parent().parent().attr("filter_tags", $(this).text());
+                          }
+                            
+                          $(this).parent().parent().parent().addClass("added_filter_body");
+                        }
+    
+                        
+                      });  
+                 
+                                   
+                    });   
+                }else{
+                  $( "#note_datatable tbody tr" ).each(function( index ) {
+
+                    if ($(this).hasClass("added_filter_row")) {
+                      var tags_count = 0;
+
+                      $(this).children(".hide_tags_notes").children(".tag_list").each(function( index ) {
+                        
+                        if ($(option).val() == $(this).text()){
+    
+                          
+                          if ($(this).parent().parent().attr("filter_tags") != null){
+                            var  new_add_tags = "";
+                            new_add_tags = $(this).parent().parent().attr("filter_tags");
+                            new_add_tags = new_add_tags + ",";
+                            new_add_tags = new_add_tags + $(this).text();
+                            $(this).parent().parent().attr("filter_tags", new_add_tags);
+    
+                          }else {
+                            $(this).parent().parent().attr("filter_tags", $(this).text());
+                          }
+                            
+                          tags_count = tags_count + 1;
+                        }
+    
+                        
+                      });  
+
+                      if (tags_count == 0 ){
+                        $(this).removeClass("added_filter_row");
+                        //$(this).removeAttr("filter_tags");
+                      }
+
+                      tags_count = 0;
+
+                    }else {
+
+                      $(this).children(".hide_tags_notes").children(".tag_list").each(function( index ) {
+                        
+                        if ($(option).val() == $(this).text()){
+    
+                          
+                          if ($(this).parent().parent().attr("filter_tags") != null){
+                            var  new_add_tags = "";
+                            new_add_tags = $(this).parent().parent().attr("filter_tags");
+                            new_add_tags = new_add_tags + ",";
+                            new_add_tags = new_add_tags + $(this).text();
+                            $(this).parent().parent().attr("filter_tags", new_add_tags);
+    
+                          }else {
+                            $(this).parent().parent().attr("filter_tags", $(this).text());
+                          }
+                            
+                         
+                        }
+    
+                        
+                      });  
+                    }
+                    
+                  });
+                }
+                
+
+                //show filter tag to board
+                var current_show_val = false;
+                $( ".show_filter_wrap .show_filters" ).each(function( index ) {
+                  if ($(this).attr("data_filter") == $(option).val()){
+                    current_show_val = true;
+                    return false;
+                  }                    
+                });
+
+                if (!current_show_val){
+                  var current_total = "";
+                  current_total = "<div class='show_filters' data_filter='"+ $(option).val() +"'> <i class='material-icons'>filter_alt</i>" + $(option).val()  + "<div class='close_filter_btn' data_filter='"+ $(option).val() + "'><i class='material-icons'>close</i></div></div>"
+                  $( ".show_filter_wrap" ).append( current_total);
+                  current_show_val = false;
+                }
+                
+
+                $(".filter_tags_reset").css("visibility", "visible");
+
+              }else{
+                clear_select_one_filter_tags();
+
+                $( ".show_filter_wrap .show_filters" ).each(function( index ) {
+                  if ($(this).attr("data_filter") == $(option).val()){
+                    $(this).remove();
+                    return false;
+                  }                    
+                });
+              }
+
+
+              //  alert('Changed option ' + $(option).val() + '.');
+                
+            }
+        });
+
   
+
+
+  //getting list of added filter rows and fitler_tags list Function
+  function getting_list_filter(){
+
+   
+    var filter_row_list = [];
+
+    $( "#note_datatable tbody tr" ).each(function( index ) {
+      if ($(this).attr("filter_tags") != null){
+
+
+          if($(this).hasClass("added_filter_row")){
+            filter_row_list.push([1, $(this).attr("filter_tags"), $(this).find(".note_left_id_hide").text()]); 
+          }else{
+            filter_row_list.push([0, $(this).attr("filter_tags"), $(this).find(".note_left_id_hide").text()]); 
+          }
+
+      }
+    });
+
+    return filter_row_list;       
+
+  };
+    
+
+
   $( ".side_menu_bar_wrap li" ).each(function( index ) {
     if ($(this).hasClass("active")){
       $(this).removeClass("active");
@@ -255,114 +524,114 @@ $(document).ready(function (){
   });
 
 
-var sort_order_num = sessionStorage.getItem("sort_order_number");
+  var sort_order_num = sessionStorage.getItem("sort_order_number");
 
-var init_order_note = "";
+  var init_order_note = "";
 
-if (sort_order_num != null){
-  console.log("not null first");
-  switch(sort_order_num){
-    case "0":
-      init_order_note = [[ 0, "desc" ]];
-      break;
-    case "1":
-      init_order_note = [[ 0, "asc" ]];
-      break;
-    case "2":
-      init_order_note = [[ 8, "desc" ]];
-      break;
-    case "3":
-      init_order_note = [[ 8, "asc" ]];
-      break;
-    case "4":
-      init_order_note = [[ 2, "desc" ]];
-      break;
-    case "5":
-      init_order_note = [[ 2, "desc" ]];
-      break;
+  if (sort_order_num != null){
+    console.log("not null first");
+    switch(sort_order_num){
+      case "0":
+        init_order_note = [[ 0, "desc" ]];
+        break;
+      case "1":
+        init_order_note = [[ 0, "asc" ]];
+        break;
+      case "2":
+        init_order_note = [[ 8, "desc" ]];
+        break;
+      case "3":
+        init_order_note = [[ 8, "asc" ]];
+        break;
+      case "4":
+        init_order_note = [[ 2, "desc" ]];
+        break;
+      case "5":
+        init_order_note = [[ 2, "desc" ]];
+        break;
+    }
+  }else{
+    init_order_note = [[ 0, "desc" ]];
   }
-}else{
-  init_order_note = [[ 0, "desc" ]];
-}
 
 
-var note_datatable = $('#note_datatable').DataTable( {
-      "paging":   false,
-      "ordering": true,
-      "order": init_order_note,
-      "info":     false,
-      "searchHighlight": true,
-      "deferRender": true,      
-      "select": true,
-      "ajax": "<?=base_url('admin/my_notes/datatable_json')?>",
-      "initComplete": function( settings, json ) {
-        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      },
-      "columnDefs": [
-            {
-                "targets": [ 0 ],
-                "orderable": true,
-                "visible": true
-            },
-            {
-                "targets": [ 1 ],
-                "visible": true,
-                "orderable": true,
-                "searchable": false,
-                "className": "hide_created_notes"
-            },
-            {
-                "targets": [ 2 ],
-                "visible": true,
-                "orderable": true,
-                "searchable": false,
-                "className": "hide_updated_notes"
-            },
-            {
-                "targets": [ 3 ],
-                "visible": true,
-                "orderable": true,
-                "searchable": false,
-                "className": "hide_tags_notes"
-            },
-            {
-                "targets": [ 4 ],
-                "visible": true,
-                "orderable": true,
-                "className": "note_left_id_hide",
-                "searchable": false
-            },
-            {
-                "targets": [ 5 ],
-                "visible": true,
-                "orderable": true,
-                "className": "note_left_content_hide",
-                "searchable": false
-            },
-            {
-                "targets": [ 6 ],
-                "visible": true,
-                "orderable": true,
-                "className": "note_left_userid_hide",
-                "searchable": false
-            },
-            {
-                "targets": [ 7 ],
-                "visible": true,
-                "orderable": true,
-                "className": "note_left_tags_hide",
-                "searchable": false
-            }
-            ,
-            {
-                "targets": [ 8 ],
-                "visible": true,
-                "orderable": true,
-                "className": "note_left_title_hide",
-                "searchable": false
-            }
-        ]
-});
+  var note_datatable = $('#note_datatable').DataTable( {
+        "paging":   false,
+        "ordering": true,
+        "order": init_order_note,
+        "info":     false,
+        "searchHighlight": true,
+        "deferRender": true,      
+        "select": true,
+        "ajax": "<?=base_url('admin/my_notes/datatable_json')?>",
+        "initComplete": function( settings, json ) {
+          $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        },
+        "columnDefs": [
+              {
+                  "targets": [ 0 ],
+                  "orderable": true,
+                  "visible": true
+              },
+              {
+                  "targets": [ 1 ],
+                  "visible": true,
+                  "orderable": true,
+                  "searchable": false,
+                  "className": "hide_created_notes"
+              },
+              {
+                  "targets": [ 2 ],
+                  "visible": true,
+                  "orderable": true,
+                  "searchable": false,
+                  "className": "hide_updated_notes"
+              },
+              {
+                  "targets": [ 3 ],
+                  "visible": true,
+                  "orderable": true,
+                  "searchable": false,
+                  "className": "hide_tags_notes"
+              },
+              {
+                  "targets": [ 4 ],
+                  "visible": true,
+                  "orderable": true,
+                  "className": "note_left_id_hide",
+                  "searchable": false
+              },
+              {
+                  "targets": [ 5 ],
+                  "visible": true,
+                  "orderable": true,
+                  "className": "note_left_content_hide",
+                  "searchable": false
+              },
+              {
+                  "targets": [ 6 ],
+                  "visible": true,
+                  "orderable": true,
+                  "className": "note_left_userid_hide",
+                  "searchable": false
+              },
+              {
+                  "targets": [ 7 ],
+                  "visible": true,
+                  "orderable": true,
+                  "className": "note_left_tags_hide",
+                  "searchable": false
+              }
+              ,
+              {
+                  "targets": [ 8 ],
+                  "visible": true,
+                  "orderable": true,
+                  "className": "note_left_title_hide",
+                  "searchable": false
+              }
+          ]
+  });
 
 
 
@@ -379,6 +648,12 @@ var note_datatable = $('#note_datatable').DataTable( {
   $('#create_note_form').submit(function(e){
         	
       e.preventDefault(); 
+
+      clear_selected_filter_tags();
+      $("#my_select_filter_tags").multiselect("clearSelection");
+      $( ".show_filter_wrap .show_filters" ).each(function( index ) {
+          $(this).remove();
+      });
           
       var ajax_url = '<?php echo base_url();?>admin/my_notes/create_notes';
          
@@ -389,9 +664,7 @@ var note_datatable = $('#note_datatable').DataTable( {
         url: ajax_url,   
         dataType: "json",
         success: function(res) {
-          console.log("here");
-          console.log(res);
-          console.log(res['current_id']);
+          
 
           note_datatable.row.add([
             '<div class="show_create_date">'+res['created_at']+'</div><div class="show_note_title">'+"Untitled"+'</div>',
@@ -455,9 +728,11 @@ var note_datatable = $('#note_datatable').DataTable( {
 
 
 
-
+var clicked_tr_id = "";
 
 $( "#note_datatable tbody" ).on( "click", "tr", function() {
+
+  clicked_tr_id = $(this).find(".note_left_id_hide").text();
 
   $( "#note_datatable tbody tr" ).each(function( index ) {
     if ($(this).hasClass("selected_tr") ){
@@ -522,7 +797,7 @@ $('#createtag').keypress(function (e) {
   if (e.which == 13) {
     $(".update_note").trigger('click');
    // $('form#create_tag_form').submit();
-   console.log("aaaaa");
+  
     return false;    //<---- Add this line
   }
 });
@@ -552,10 +827,14 @@ $('#update_note_form').submit(function(e){
 		       contentType:false,
            success: function(res) {
              
-             console.log(res);
+             
              var selected_element = $("tr.selected_tr");
              selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
              var current_id = selected_element.find(".note_left_id_hide").text();
+
+
+             var filter_row_list = [];
+             filter_row_list = getting_list_filter();
 
              if (res['new_tag_name'] != ""){
                var add_tag = "<div class='tag_list'>" + res['new_tag_name'];
@@ -584,15 +863,27 @@ $('#update_note_form').submit(function(e){
              
               note_datatable.ajax.reload();
 
-              console.log(selected_element.find(".note_left_id_hide").text());
               
 
               setTimeout(function() {
                 $( "#note_datatable tbody tr" ).each(function( index ) {
+
                 if ($(this).find(".note_left_id_hide").text() == current_id ){
-                  $(this).addClass("selected_tr");
-                  console.log("same----", index);
+                  $(this).addClass("selected_tr");                 
                 }
+
+                var i;
+                for (i = 0; i < filter_row_list.length; i++) {
+                    // do something with `substr[i]`
+                    if ($(this).find(".note_left_id_hide").text() == filter_row_list[i][2] ){
+                      $(this).attr("filter_tags", filter_row_list[i][1]);
+                      
+                      if(filter_row_list[i][0] == 1){
+                        $(this).addClass("added_filter_row");
+                      }
+                    }
+                }
+
               });
               }, 500);
             
@@ -608,211 +899,303 @@ $('#update_note_form').submit(function(e){
 
 
 
-$( ".note_wrap_ctr_btn" ).on( "click", function() {
-  if (!$(".row_left").hasClass("col-lg-8")){
+  $( ".note_wrap_ctr_btn" ).on( "click", function() {
+    if (!$(".row_left").hasClass("col-lg-8")){
+      
+      $(".row_left").addClass("col-lg-8");
+      $(".row_left").addClass("col-md-8");
+      $(".row_left").removeClass("col-lg-4");
+      $(".row_left").removeClass("col-md-4");
+      $(".row_left").removeClass("row_left_small");
+      $(".row_left").addClass("row_left_large");
+
+      $(".row_right").addClass("col-lg-4");
+      $(".row_right").addClass("col-md-4");
+      $(".row_right").removeClass("col-lg-8");
+      $(".row_right").removeClass("col-md-8");
+
+      
+    // note_datatable.column(1).visible(true);
+    // note_datatable.column(2).visible(true);
+    // note_datatable.column(3).visible(true);
+
+    }else {
+      
+      $(".row_left").removeClass("col-lg-8");
+      $(".row_left").removeClass("col-md-8");
+      $(".row_left").addClass("col-lg-4");
+      $(".row_left").addClass("col-md-4");
+      $(".row_left").removeClass("row_left_large");
+      $(".row_left").addClass("row_left_small");
+
+      $(".row_right").addClass("col-lg-8");
+      $(".row_right").addClass("col-md-8");
+      $(".row_right").removeClass("col-lg-4");
+      $(".row_right").removeClass("col-md-4");
+
+
+    //  note_datatable.column(1).visible(false);
+    //  note_datatable.column(2).visible(false);
+    // note_datatable.column(3).visible(false);
+
+    }
+  });
+
+
+
+  //Search Field
+
+
+  $( ".search_btn" ).on( "click", function() {
+
+    console.log("sear_text", $(".search_field").val());
+    var search_key = $(".search_field").val();
+
+    //document.getElementByClass("search_field").innerHTML = x;
+
+    if (search_key != ""){
+      $(".close_search_btn").css("display", "block");
+
+      $(".dataTables_filter input").val(search_key);
+
+      note_datatable.search(search_key).draw();
+
+      $("#note_datatable tbody tr").first().trigger("click");
+
+    }
+  
+
+  });
+
+
+  $( ".close_search_btn" ).on( "click", function() { 
+    $(".dataTables_filter input").val("");
     
-    $(".row_left").addClass("col-lg-8");
-    $(".row_left").addClass("col-md-8");
-    $(".row_left").removeClass("col-lg-4");
-    $(".row_left").removeClass("col-md-4");
-    $(".row_left").removeClass("row_left_small");
-    $(".row_left").addClass("row_left_large");
-
-    $(".row_right").addClass("col-lg-4");
-    $(".row_right").addClass("col-md-4");
-    $(".row_right").removeClass("col-lg-8");
-    $(".row_right").removeClass("col-md-8");
-
-    
-   // note_datatable.column(1).visible(true);
-   // note_datatable.column(2).visible(true);
-   // note_datatable.column(3).visible(true);
-
-  }else {
-    
-    $(".row_left").removeClass("col-lg-8");
-    $(".row_left").removeClass("col-md-8");
-    $(".row_left").addClass("col-lg-4");
-    $(".row_left").addClass("col-md-4");
-    $(".row_left").removeClass("row_left_large");
-    $(".row_left").addClass("row_left_small");
-
-    $(".row_right").addClass("col-lg-8");
-    $(".row_right").addClass("col-md-8");
-    $(".row_right").removeClass("col-lg-4");
-    $(".row_right").removeClass("col-md-4");
-
-
-  //  note_datatable.column(1).visible(false);
-  //  note_datatable.column(2).visible(false);
-   // note_datatable.column(3).visible(false);
-
-  }
-});
-
-
-
-//Search Field
-
-
-$( ".search_btn" ).on( "click", function() {
-
-  console.log("sear_text", $(".search_field").val());
-  var search_key = $(".search_field").val();
-
-  //document.getElementByClass("search_field").innerHTML = x;
-
-  if (search_key != ""){
-    $(".close_search_btn").css("display", "block");
-
-    $(".dataTables_filter input").val(search_key);
-
-    note_datatable.search(search_key).draw();
+    $(".search_field").val("");
+    note_datatable.search("").draw();
+    $(this).css("display","none");
 
     $("#note_datatable tbody tr").first().trigger("click");
 
+  });
+
+
+
+  $('.search_field').keypress(function (e) {
+  var key = e.which;
+  if(key == 13)  // the enter key code
+    {
+      $(".search_btn").trigger("click");
+      return false;  
+    }
+  });   
+
+
+
+  ///Setting Sort Order
+
+
+
+  console.log("sort_num", sort_order_num);
+
+  if (sort_order_num != null){
+    console.log("not null");
+    switch(sort_order_num){
+      case "0":
+        $("#sort_created_notes").addClass("selected");
+        $("#sort_created_notes").attr( "sort_order_val", 0 );
+        $("#sort_created_notes i").first().addClass("selected");
+        sessionStorage.setItem('sort_order_number', 0);
+        note_datatable.order( [ 1, 'desc' ] ).draw();
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        break;
+      case "1":
+        $("#sort_created_notes").addClass("selected");
+        $("#sort_created_notes").attr( "sort_order_val", 1 );
+        $("#sort_created_notes i").last().addClass("selected");
+        sessionStorage.setItem('sort_order_number', 1);
+        note_datatable.order( [ 1, 'asc' ] ).draw();
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        break;
+      case "2":
+        $("#sort_title_notes").addClass("selected");
+        $("#sort_title_notes").attr( "sort_order_val",  2);
+        sessionStorage.setItem('sort_order_number', 2);
+        $("#sort_title_notes i").first().addClass("selected");
+        note_datatable.order( [ 8, 'desc' ] ).draw();
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        break;
+      case "3":
+        $("#sort_title_notes").addClass("selected");
+        $("#sort_title_notes").attr( "sort_order_val", 3 );
+        sessionStorage.setItem('sort_order_number', 3);
+        $("#sort_title_notes i").last().addClass("selected");
+        note_datatable.order( [ 8, 'asc' ] ).draw();
+        
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        break;
+      case "4":
+        $("#sort_updated_notes").addClass("selected");
+        $("#sort_updated_notes").attr( "sort_order_val", 4);
+        sessionStorage.setItem('sort_order_number', 4);
+        $("#sort_updated_notes i").first().addClass("selected");
+        note_datatable.order( [ 2, 'desc' ] ).draw();
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        
+        break;
+      case "5":
+        $("#sort_updated_notes").addClass("selected");
+        $("#sort_updated_notes").attr( "sort_order_val", 5 );
+        sessionStorage.setItem('sort_order_number', 5);
+        $("#sort_updated_notes i").last().addClass("selected");
+        note_datatable.order( [ 2, 'asc' ] ).draw();
+        setTimeout(function() {
+          $( "#note_datatable tbody tr" ).first().trigger("click");  
+        }, 500);
+        $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
+        break;
+    }
+  }else{
+    console.log("null");
+    
+    $("#sort_created_notes").addClass("selected");
+    $("#sort_created_notes").attr( "sort_order_val", 0 );
+    $("#sort_created_notes i").first().addClass("selected");
+    sessionStorage.setItem('sort_order_number', 0);
   }
- 
-
-});
 
 
-$( ".close_search_btn" ).on( "click", function() { 
-  $(".dataTables_filter input").val("");
+
+  $( "#sort_created_notes" ).on( "click", function() { 
+
+    var current_order_val;
+    if ($(this).hasClass("selected")){
+      current_order_val = $(this).attr("sort_order_val");
+      console.log(current_order_val);
+      if(current_order_val == 0){
+        $(this).attr( "sort_order_val", 1 );
+        sessionStorage.setItem('sort_order_number', 1);
+        $("#sort_created_notes i").last().addClass("selected");
+        
+        if ($("#sort_created_notes i").first().hasClass("selected")){
+          $("#sort_created_notes i").first().removeClass("selected");
+        }
+        note_datatable.ajax.reload();
+        note_datatable.order( [ 1, 'asc' ] ).draw();
+
+      }else{
+        $(this).attr( "sort_order_val", 0 );
+        $("#sort_created_notes i").first().addClass("selected");
+
+        sessionStorage.setItem('sort_order_number', 0);
+
+        if ($("#sort_created_notes i").last().hasClass("selected")){
+          $("#sort_created_notes i").last().removeClass("selected");
+        }
+        note_datatable.ajax.reload();
+        note_datatable.order( [ 1, 'desc' ] ).draw();
+      }
+        
+    }else {
+      $(this).attr( "sort_order_val", 0 );
+        $("#sort_created_notes i").first().addClass("selected");
+
+        sessionStorage.setItem('sort_order_number', 0);
+
+        if ($("#sort_created_notes i").last().hasClass("selected")){
+          $("#sort_created_notes i").last().removeClass("selected");
+        }
+        note_datatable.ajax.reload();
+        note_datatable.order( [ 1, 'desc' ] ).draw();
+    }
   
-  $(".search_field").val("");
-  note_datatable.search("").draw();
-  $(this).css("display","none");
+    $( ".sort_menu_item" ).each(function( index ) {
+      if ($(this).hasClass("selected") ){
+        $(this).removeClass("selected");
+      }
+    });
 
-  $("#note_datatable tbody tr").first().trigger("click");
+    $(this).addClass("selected");
 
-});
-
-
-
-$('.search_field').keypress(function (e) {
- var key = e.which;
- if(key == 13)  // the enter key code
-  {
-    $(".search_btn").trigger("click");
-    return false;  
-  }
-});   
+    var selected_element = $("tr.selected_tr");
+    selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+    var current_id = selected_element.find(".note_left_id_hide").text();
 
 
-
-///Setting Sort Order
-
-
-
-console.log("sort_num", sort_order_num);
-
-if (sort_order_num != null){
-  console.log("not null");
-  switch(sort_order_num){
-    case "0":
-      $("#sort_created_notes").addClass("selected");
-      $("#sort_created_notes").attr( "sort_order_val", 0 );
-      $("#sort_created_notes i").first().addClass("selected");
-      sessionStorage.setItem('sort_order_number', 0);
-      note_datatable.order( [ 1, 'desc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-    case "1":
-      $("#sort_created_notes").addClass("selected");
-      $("#sort_created_notes").attr( "sort_order_val", 1 );
-      $("#sort_created_notes i").last().addClass("selected");
-      sessionStorage.setItem('sort_order_number', 1);
-      note_datatable.order( [ 1, 'asc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-    case "2":
-      $("#sort_title_notes").addClass("selected");
-      $("#sort_title_notes").attr( "sort_order_val",  2);
-      sessionStorage.setItem('sort_order_number', 2);
-      $("#sort_title_notes i").first().addClass("selected");
-      note_datatable.order( [ 8, 'desc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-    case "3":
-      $("#sort_title_notes").addClass("selected");
-      $("#sort_title_notes").attr( "sort_order_val", 3 );
-      sessionStorage.setItem('sort_order_number', 3);
-      $("#sort_title_notes i").last().addClass("selected");
-      note_datatable.order( [ 8, 'asc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-    case "4":
-      $("#sort_updated_notes").addClass("selected");
-      $("#sort_updated_notes").attr( "sort_order_val", 4);
-      sessionStorage.setItem('sort_order_number', 4);
-      $("#sort_updated_notes i").first().addClass("selected");
-      note_datatable.order( [ 2, 'desc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-    case "5":
-      $("#sort_updated_notes").addClass("selected");
-      $("#sort_updated_notes").attr( "sort_order_val", 5 );
-      sessionStorage.setItem('sort_order_number', 5);
-      $("#sort_updated_notes i").last().addClass("selected");
-      note_datatable.order( [ 2, 'asc' ] ).draw();
-      $( "#note_datatable tbody tr" ).first().addClass( "selected_tr" );
-      break;
-  }
-}else{
-  console.log("null");
-  
-  $("#sort_created_notes").addClass("selected");
-  $("#sort_created_notes").attr( "sort_order_val", 0 );
-  $("#sort_created_notes i").first().addClass("selected");
-  sessionStorage.setItem('sort_order_number', 0);
-}
+    setTimeout(function() {
+      $( "#note_datatable tbody tr" ).each(function( index ) {
+      if ($(this).find(".note_left_id_hide").text() == current_id ){
+        $(this).addClass("selected_tr");
+        console.log("same----", index);
+      }
+    });
+    }, 500);
 
 
 
-$( "#sort_created_notes" ).on( "click", function() { 
+  });
+
+
+
+
+  $( "#sort_updated_notes" ).on( "click", function() { 
 
   var current_order_val;
   if ($(this).hasClass("selected")){
     current_order_val = $(this).attr("sort_order_val");
     console.log(current_order_val);
-    if(current_order_val == 0){
-      $(this).attr( "sort_order_val", 1 );
-      sessionStorage.setItem('sort_order_number', 1);
-      $("#sort_created_notes i").last().addClass("selected");
+    if(current_order_val == 4){
+      $(this).attr( "sort_order_val", 5 );
+      sessionStorage.setItem('sort_order_number', 5);
+      $("#sort_updated_notes i").last().addClass("selected");
       
-      if ($("#sort_created_notes i").first().hasClass("selected")){
-        $("#sort_created_notes i").first().removeClass("selected");
+      if ($("#sort_updated_notes i").first().hasClass("selected")){
+        $("#sort_updated_notes i").first().removeClass("selected");
       }
       note_datatable.ajax.reload();
-      note_datatable.order( [ 1, 'asc' ] ).draw();
+      note_datatable.order( [ 2, 'asc' ] ).draw();
 
     }else{
-      $(this).attr( "sort_order_val", 0 );
-      $("#sort_created_notes i").first().addClass("selected");
+      $(this).attr( "sort_order_val", 4 );
+      $("#sort_updated_notes i").first().addClass("selected");
 
-      sessionStorage.setItem('sort_order_number', 0);
+      sessionStorage.setItem('sort_order_number', 4);
 
-      if ($("#sort_created_notes i").last().hasClass("selected")){
-        $("#sort_created_notes i").last().removeClass("selected");
+      if ($("#sort_updated_notes i").last().hasClass("selected")){
+        $("#sort_updated_notes i").last().removeClass("selected");
       }
       note_datatable.ajax.reload();
-      note_datatable.order( [ 1, 'desc' ] ).draw();
+      note_datatable.order( [ 2, 'desc' ] ).draw();
     }
       
   }else {
-    $(this).attr( "sort_order_val", 0 );
-      $("#sort_created_notes i").first().addClass("selected");
+    $(this).attr( "sort_order_val", 4 );
+      $("#sort_updated_notes i").first().addClass("selected");
 
-      sessionStorage.setItem('sort_order_number', 0);
+      sessionStorage.setItem('sort_order_number', 4);
 
-      if ($("#sort_created_notes i").last().hasClass("selected")){
-        $("#sort_created_notes i").last().removeClass("selected");
+      if ($("#sort_updated_notes i").last().hasClass("selected")){
+        $("#sort_updated_notes i").last().removeClass("selected");
       }
       note_datatable.ajax.reload();
-      note_datatable.order( [ 1, 'desc' ] ).draw();
+      note_datatable.order( [ 2, 'desc' ] ).draw();
   }
- 
+
   $( ".sort_menu_item" ).each(function( index ) {
     if ($(this).hasClass("selected") ){
       $(this).removeClass("selected");
@@ -822,167 +1205,162 @@ $( "#sort_created_notes" ).on( "click", function() {
   $(this).addClass("selected");
 
   var selected_element = $("tr.selected_tr");
-  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
-  var current_id = selected_element.find(".note_left_id_hide").text();
+    selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+    var current_id = selected_element.find(".note_left_id_hide").text();
 
 
-  setTimeout(function() {
-    $( "#note_datatable tbody tr" ).each(function( index ) {
-    if ($(this).find(".note_left_id_hide").text() == current_id ){
-      $(this).addClass("selected_tr");
-      console.log("same----", index);
-    }
+    setTimeout(function() {
+      $( "#note_datatable tbody tr" ).each(function( index ) {
+      if ($(this).find(".note_left_id_hide").text() == current_id ){
+        $(this).addClass("selected_tr");
+        console.log("same----", index);
+      }
+    });
+    }, 500);
+
+
+
   });
-  }, 500);
 
 
+  $( "#sort_title_notes" ).on( "click", function() { 
 
-});
+  var current_order_val;
+  if ($(this).hasClass("selected")){
+    current_order_val = $(this).attr("sort_order_val");
+    console.log(current_order_val);
+    if(current_order_val == 2){
+      $(this).attr( "sort_order_val", 3 );
+      sessionStorage.setItem('sort_order_number', 3);
+      $("#sort_title_notes i").last().addClass("selected");
+      
+      if ($("#sort_title_notes i").first().hasClass("selected")){
+        $("#sort_title_notes i").first().removeClass("selected");
+      }
+      note_datatable.ajax.reload();
+      note_datatable.order( [ 8, 'asc' ] ).draw();
 
+    }else{
+      $(this).attr( "sort_order_val", 2 );
+      $("#sort_title_notes i").first().addClass("selected");
 
+      sessionStorage.setItem('sort_order_number', 2);
 
+      if ($("#sort_title_notes i").last().hasClass("selected")){
+        $("#sort_title_notes i").last().removeClass("selected");
+      }
 
-$( "#sort_updated_notes" ).on( "click", function() { 
-
-var current_order_val;
-if ($(this).hasClass("selected")){
-  current_order_val = $(this).attr("sort_order_val");
-  console.log(current_order_val);
-  if(current_order_val == 4){
-    $(this).attr( "sort_order_val", 5 );
-    sessionStorage.setItem('sort_order_number', 5);
-    $("#sort_updated_notes i").last().addClass("selected");
-    
-    if ($("#sort_updated_notes i").first().hasClass("selected")){
-      $("#sort_updated_notes i").first().removeClass("selected");
+      note_datatable.ajax.reload();
+      note_datatable.order( [ 8, 'desc' ] ).draw();
     }
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 2, 'asc' ] ).draw();
-
-  }else{
-    $(this).attr( "sort_order_val", 4 );
-    $("#sort_updated_notes i").first().addClass("selected");
-
-    sessionStorage.setItem('sort_order_number', 4);
-
-    if ($("#sort_updated_notes i").last().hasClass("selected")){
-      $("#sort_updated_notes i").last().removeClass("selected");
-    }
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 2, 'desc' ] ).draw();
-  }
-    
-}else {
-  $(this).attr( "sort_order_val", 4 );
-    $("#sort_updated_notes i").first().addClass("selected");
-
-    sessionStorage.setItem('sort_order_number', 4);
-
-    if ($("#sort_updated_notes i").last().hasClass("selected")){
-      $("#sort_updated_notes i").last().removeClass("selected");
-    }
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 2, 'desc' ] ).draw();
-}
-
-$( ".sort_menu_item" ).each(function( index ) {
-  if ($(this).hasClass("selected") ){
-    $(this).removeClass("selected");
-  }
-});
-
-$(this).addClass("selected");
-
-var selected_element = $("tr.selected_tr");
-  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
-  var current_id = selected_element.find(".note_left_id_hide").text();
-
-
-  setTimeout(function() {
-    $( "#note_datatable tbody tr" ).each(function( index ) {
-    if ($(this).find(".note_left_id_hide").text() == current_id ){
-      $(this).addClass("selected_tr");
-      console.log("same----", index);
-    }
-  });
-  }, 500);
-
-
-
-});
-
-
-$( "#sort_title_notes" ).on( "click", function() { 
-
-var current_order_val;
-if ($(this).hasClass("selected")){
-  current_order_val = $(this).attr("sort_order_val");
-  console.log(current_order_val);
-  if(current_order_val == 2){
-    $(this).attr( "sort_order_val", 3 );
-    sessionStorage.setItem('sort_order_number', 3);
-    $("#sort_title_notes i").last().addClass("selected");
-    
-    if ($("#sort_title_notes i").first().hasClass("selected")){
-      $("#sort_title_notes i").first().removeClass("selected");
-    }
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 8, 'asc' ] ).draw();
-
-  }else{
+      
+  }else {
     $(this).attr( "sort_order_val", 2 );
-    $("#sort_title_notes i").first().addClass("selected");
+      $("#sort_title_notes i").first().addClass("selected");
 
-    sessionStorage.setItem('sort_order_number', 2);
+      sessionStorage.setItem('sort_order_number', 2);
 
-    if ($("#sort_title_notes i").last().hasClass("selected")){
-      $("#sort_title_notes i").last().removeClass("selected");
-    }
+      if ($("#sort_title_notes i").last().hasClass("selected")){
+        $("#sort_title_notes i").last().removeClass("selected");
+      }
 
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 8, 'desc' ] ).draw();
+      note_datatable.ajax.reload();
+      note_datatable.order( [ 8, 'desc' ] ).draw();
   }
-    
-}else {
-  $(this).attr( "sort_order_val", 2 );
-    $("#sort_title_notes i").first().addClass("selected");
 
-    sessionStorage.setItem('sort_order_number', 2);
-
-    if ($("#sort_title_notes i").last().hasClass("selected")){
-      $("#sort_title_notes i").last().removeClass("selected");
-    }
-
-    note_datatable.ajax.reload();
-    note_datatable.order( [ 8, 'desc' ] ).draw();
-}
-
-$( ".sort_menu_item" ).each(function( index ) {
-  if ($(this).hasClass("selected") ){
-    $(this).removeClass("selected");
-  }
-});
-
-$(this).addClass("selected");
-
-var selected_element = $("tr.selected_tr");
-  selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
-  var current_id = selected_element.find(".note_left_id_hide").text();
-
-
-  setTimeout(function() {
-    $( "#note_datatable tbody tr" ).each(function( index ) {
-    if ($(this).find(".note_left_id_hide").text() == current_id ){
-      $(this).addClass("selected_tr");
-      console.log("same----", index);
+  $( ".sort_menu_item" ).each(function( index ) {
+    if ($(this).hasClass("selected") ){
+      $(this).removeClass("selected");
     }
   });
-  }, 500);
 
-  
+  $(this).addClass("selected");
 
-});
+  var selected_element = $("tr.selected_tr");
+    selected_element.attr("id", selected_element.find(".note_left_id_hide").text());
+    var current_id = selected_element.find(".note_left_id_hide").text();
 
+
+    setTimeout(function() {
+      $( "#note_datatable tbody tr" ).each(function( index ) {
+      if ($(this).find(".note_left_id_hide").text() == current_id ){
+        $(this).addClass("selected_tr");
+        console.log("same----", index);
+      }
+    });
+    }, 500);
+
+
+
+  });
+
+
+
+
+
+// auto Save functions
+
+  var autoSave_content = (function(){
+    var timer = 0;
+    //$(".update_note").trigger('click');
+    return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+    };
+  })();
+
+
+  var old_clicked_id = "";
+
+  CKEDITOR.instances.ckeditor.on( 'change', function( evt ) {
+    // getData() returns CKEditor's HTML content.
+    
+    //console.log(evt.editor.element.getId());
+
+
+    if (old_clicked_id == clicked_tr_id) {
+      autoSave_content(function(){
+        console.log('Resize...id', clicked_tr_id);
+        
+        $(".update_note").trigger('click');
+        //...
+      }, 1000, "some unique string");
+     
+    }else{
+      autoSave_content(function(){
+        console.log('old_clicked_id...id', clicked_tr_id);
+        
+        old_clicked_id = clicked_tr_id;
+        //...
+      }, 1000, "some unique string");
+    }    
+   
+    
+    
+  });
+
+
+  $("#subject").change(function(){
+    $(".update_note").trigger('click');
+  });
+
+
+
+  $('.dropdown_select .select_menu_wrap .multiselect').click(function(e) {
+    e.stopPropagation();
+    $(".filter_tags_wrap .btn-group").each(function( index ) {
+      if ( !$(this).hasClass("select_filter_tags") ){
+         
+          if($(this).hasClass("open")){
+            $(this).removeClass("open");
+          }else{
+            $(this).addClass("open");
+          }
+        
+      }
+    });
+
+  });
 
 });
 </script>
@@ -997,6 +1375,7 @@ var selected_element = $("tr.selected_tr");
 //CKEditor
 CKEDITOR.replace('ckeditor');
 CKEDITOR.config.height = 400;
+
 
 
 
