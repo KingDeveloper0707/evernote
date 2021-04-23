@@ -739,7 +739,24 @@ var current_ck_content = "";
 
 var ready_click = false;
 
+$( window ).resize(function() {
+  var window_width = $( window ).width(); 
+  
 
+  //show right row and list row on mobile
+  if (window_width < 768){
+    if (!ready_click){
+      ready_click = true;
+    }else{
+      $(".row_left").addClass("hide_mobile")
+      $(".row_right").addClass("show_mobile");
+      $(".row_go_list").addClass("show_mobile_flex");
+    }
+
+  }else {
+    ready_click = false;
+  }
+});
 
 
 $( "#note_datatable tbody" ).on( "click", "tr", function() {

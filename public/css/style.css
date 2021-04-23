@@ -8625,6 +8625,14 @@ table.dataTable tbody tr.selected_tr {
   font-size: 32px;
 }
 
+.next_wrap span {
+  width: 60px;
+  text-align: right;
+}
+
+.prev_wrap span {
+  width: 60px;
+}
 
 
 
