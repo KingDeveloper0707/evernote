@@ -135,11 +135,17 @@
         </div>
        
 
+       <div class="col-xs-12 row_go_list">
+        <div class="prev_wrap"><i class="material-icons">navigate_before</i> <span>Previous</span></div>                                                      
+        <div class="go_list_btn">Back to List</div>                                                            
+        <div class="next_wrap"> <span>Next</span> <i class="material-icons">navigate_next</i></div>                                                      
+       </div>
+
         <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 row_right">
           <div class="card">
             <div class="body">
                 <div class="note-details-wrap">
-                 
+
                   <form class="form-horizontal" id="update_note_form" enctype='multipart/form-data'>
                     <div class="note-details-header">
                       <div class="left_title">
@@ -729,6 +735,12 @@
 
 
 var clicked_tr_id = "";
+var current_ck_content = "";
+
+var ready_click = false;
+
+
+
 
 $( "#note_datatable tbody" ).on( "click", "tr", function() {
 
@@ -741,6 +753,28 @@ $( "#note_datatable tbody" ).on( "click", "tr", function() {
   });
 
   $(this).addClass("selected_tr");
+
+
+  var window_width = $( window ).width(); 
+  
+
+  //show right row and list row on mobile
+  if (window_width < 768){
+    if (!ready_click){
+      ready_click = true;
+    }else{
+      $(".row_left").addClass("hide_mobile")
+      $(".row_right").addClass("show_mobile");
+      $(".row_go_list").addClass("show_mobile_flex");
+    }
+
+  }else {
+    ready_click = false;
+  }
+
+
+  
+
 
 
 
@@ -757,6 +791,9 @@ $( "#note_datatable tbody" ).on( "click", "tr", function() {
   }
   //alert(replaced_text);
   
+
+
+  current_ck_content = editor1.getData();
 
   var replaced_title = $(this).find(".show_note_title").text();
   if (replaced_title == "Untitled") {
@@ -782,6 +819,56 @@ $( "#note_datatable tbody" ).on( "click", "tr", function() {
   
 
 });
+
+
+//go_list on mobile
+
+$(".go_list_btn").on( "click", function() { 
+
+  var window_width = $( window ).width();
+
+  if (window_width < 768){
+    if (!ready_click){
+      ready_click = true;
+    }else{
+      $(".row_left").removeClass("hide_mobile")
+      $(".row_right").removeClass("show_mobile");
+      $(".row_go_list").removeClass("show_mobile_flex");
+
+      $(".row_left").removeClass("show_mobile")
+      $(".row_right").removeClass("hide_mobile");
+      $(".row_go_list").removeClass("hide_mobile");
+    }
+
+  }else {
+    ready_click = false;
+  }
+
+});
+
+
+//previou note on mobile
+
+$(".prev_wrap").on ("click", function(){
+
+  var get_selected_tr = $("#note_datatable tr.selected_tr");
+
+  get_selected_tr.prev().trigger("click");
+
+
+});
+
+//next note on mobile
+
+$(".next_wrap").on ("click", function(){
+  
+  var get_selected_tr = $("#note_datatable tr.selected_tr");
+
+  get_selected_tr.next().trigger("click");
+
+
+});
+
 
 //create new tag click
 
@@ -1311,6 +1398,7 @@ $('#update_note_form').submit(function(e){
 
 
   var old_clicked_id = "";
+  var old_ck_content = "";
 
   CKEDITOR.instances.ckeditor.on( 'change', function( evt ) {
     // getData() returns CKEditor's HTML content.
@@ -1321,8 +1409,11 @@ $('#update_note_form').submit(function(e){
     if (old_clicked_id == clicked_tr_id) {
       autoSave_content(function(){
         console.log('Resize...id', clicked_tr_id);
+        old_ck_content = CKEDITOR.instances.ckeditor.getData();
+         
+        if (current_ck_content != old_ck_content)
+          $(".update_note").trigger('click');
         
-        $(".update_note").trigger('click');
         //...
       }, 1000, "some unique string");
      
@@ -1361,6 +1452,55 @@ $('#update_note_form').submit(function(e){
     });
 
   });
+
+
+
+  //hover search button on mobile
+  $( ".search_btn" ).hover(
+    function() {
+      
+      $(".search_field").addClass("show_btn");
+    }, function() {
+      setTimeout( function(){
+        $(".search_field").removeClass("show_btn");
+      },600);
+      
+      
+    }
+  );
+
+
+  $( ".search_field" ).hover(
+    function() {
+      if($(this).hasClass("show_btn"))
+        $(this).addClass("keep_show_btn");
+      if ($(this).hasClass("keep_show_btn"))
+        $(this).addClass("show_btn")
+      
+    }, function() {
+      
+      setTimeout( function(){
+        $(".search_field").removeClass("keep_show_btn");
+        
+      },600);
+    }
+  );
+
+  $( ".close_search_btn" ).hover(
+    function() {
+      setTimeout( function(){
+        $(".search_field").addClass("keep_show_btn");
+        $(this).addClass("show_btn")
+      },600);
+        
+    }, function() {
+      
+      setTimeout( function(){
+        $(".search_field").removeClass("keep_show_btn");
+      },600);
+    }
+  );
+  
 
 });
 </script>
