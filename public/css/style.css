@@ -8636,6 +8636,101 @@ table.dataTable tbody tr.selected_tr {
 
 
 
+/*profile page*/
+
+.header_title {
+  font-size: 32px;
+  color: #A8A8A8;
+  font-family: 'Inter';
+}
+
+.manage_title {
+  font-size: 16px;
+  color: black;
+  padding-left: 10px;
+  font-family: 'Inter';
+}
+
+.manage_body {
+  font-size: 11px;
+  font-weight: 600;
+  color: black;
+  border: 1px solid #E0E0E0;
+  width: 200px;  
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter';
+}
+
+.manage_body.selected {
+  color: white;
+  background: black;
+}
+
+.manage_body:hover {
+  color: white;
+  background: black;
+}
+
+.profile_created_time {
+  text-align: right;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.profile_row_wrap .form-control-label {
+  text-align: left;
+  font-size: 11px;
+  color: #A8A8A8;
+  font-family: 'Inter';
+}
+
+
+.notes_row_wrap {
+  display: none;
+}
+
+
+.action_bar_wrap {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+.action_bar_title {
+    font-size: 16px;
+    font-family: 'Inter';
+}
+
+.action_bar_line {
+  font-family: 'Inter';
+  padding: 0 20px;
+  font-size: 20px;
+}
+
+.action_bar_action {
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Inter';
+}
+
+
+.notes_row_wrap .table-responsive {
+  max-height: 670px;
+}
+
+.manage_row_wrap  {
+  margin-bottom: 20px;
+}
+
+.show_note_table_check {
+  width: 1% ! important;
+}
+
+
+
 @media (max-width: 1170px) {
   .theme-red .navbar {
     display: inline-block;
@@ -8692,6 +8787,10 @@ table.dataTable tbody tr.selected_tr {
 
   .search_field.keep_show_btn{
     display: block;
+  }
+
+  .hide_nav_top_bar {
+    display: none;
   }
 }
 

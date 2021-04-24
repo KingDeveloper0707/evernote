@@ -11,9 +11,11 @@ class Profile extends MY_Controller {
 			$data = array(
 				'username' => $this->input->post('username'),
 				'firstname' => $this->input->post('firstname'),
-				'lastname' => $this->input->post('lastname'),
+				'position_title' => $this->input->post('position_title'),
 				'email' => $this->input->post('email'),
-				'mobile_no' => $this->input->post('mobile_no'),
+				'company' => $this->input->post('company'),
+				'expertise' => $this->input->post('expertise'),
+				'bio' => $this->input->post('bio'),
 				'updated_at' => date('Y-m-d H:i:s'),
 			);
 			$data = $this->security->xss_clean($data);
@@ -28,9 +30,13 @@ class Profile extends MY_Controller {
 			}
 		}
 		else{
+			$id = $this->session->userdata('admin_id');
+
 			$data['user'] = $this->admin_model->get_user_detail();
+			$data['counts'] = $this->admin_model->get_my_counts_notes_by_id ($id);
 			$data['title'] = 'User Profile';
 			$data['view'] = 'admin/profile';
+			
 			$this->load->view('layout', $data);
 		}
 	}
@@ -63,12 +69,57 @@ class Profile extends MY_Controller {
 			}
 		}
 		else{
+			$id = $this->session->userdata('admin_id');
+
 			$data['user'] = $this->admin_model->get_user_detail();
-			$data['title'] = 'Change Password';
+			$data['counts'] = $this->admin_model->get_my_counts_notes_by_id ($id);
+			$data['title'] = 'User Profile';
 			$data['view'] = 'admin/profile';
 			$this->load->view('layout', $data);
 		}
 	}
+
+
+	public function datatable_json(){		
+		$id = $this->session->userdata('admin_id');
+
+		$records = $this->admin_model->get_all_notes_by_id($id);
+
+		$data = array();
+		
+
+		
+
+
+		foreach ($records as $row)
+		{
+			
+			
+				$data[] = array(
+
+					'<input type="checkbox" class="chkclass"  value="'. $row['id'] .'">',
+					$row['subject'],
+					$row['created_at'],
+				);
+			
+				
+		}
+
+		$recods["data"] = $data;
+	
+		echo json_encode($recods);						   
+	}
+
+	//-------------------------------------------------------------------------
+	public function delete_notes(){
+		$ids = $this->input->post('ids');
+ 
+		$records = $this->admin_model->del($ids);
+
+		if ($records)
+			echo json_encode(['success'=>"Item Deleted successfully."]);
+	}
+
 }
 
 ?>	

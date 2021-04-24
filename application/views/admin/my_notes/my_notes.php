@@ -266,7 +266,7 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
+  $(document).ready(function() {
 
       //rest all select function
       function clear_selected_filter_tags(){
