@@ -8404,7 +8404,7 @@ table.dataTable tbody tr.selected_tr {
 }
 
 .table-responsive {
-  max-height: 600px;
+  
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -8688,7 +8688,7 @@ table.dataTable tbody tr.selected_tr {
 }
 
 
-.notes_row_wrap {
+.notes_row_wrap, .tags_row_wrap {
   display: none;
 }
 
@@ -8714,6 +8714,7 @@ table.dataTable tbody tr.selected_tr {
   font-size: 11px;
   cursor: pointer;
   font-family: 'Inter';
+  margin-right: 30px;
 }
 
 
@@ -8729,7 +8730,14 @@ table.dataTable tbody tr.selected_tr {
   width: 1% ! important;
 }
 
+.show_modal_btn {
+  display: none;
+}
 
+
+.inactive_title {
+  color: #E0E0E0;
+}
 
 @media (max-width: 1170px) {
   .theme-red .navbar {

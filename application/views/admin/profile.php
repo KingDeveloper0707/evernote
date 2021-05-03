@@ -19,6 +19,8 @@
 
 </div>
 
+
+
 <div class="manage_row_wrap col-lg-3 col-md-3 col-sm-12 col-xs-12">
     <div class="manage_title">Manage</div>
 
@@ -238,6 +240,9 @@
 
 
 
+
+
+
 <!-- Jquery DataTable Plugin Js -->
 <script src="<?= base_url()?>public/plugins/jquery-datatable/jquery.dataTables.js"></script>
 <script src="<?= base_url()?>public/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
@@ -245,6 +250,7 @@
 
 <script src="<?= base_url()?>public/plugins/jquery-datatable/skin/bootstrap/js/jquery.highlight.js"></script>
 <script src="<?= base_url()?>public/plugins/bootbox/bootbox.min.js"></script>
+
 
 
 <script>
@@ -255,7 +261,7 @@ $(document).ready(function() {
         if ($(this).hasClass("active")){
             $(this).removeClass("active");
         }
-        $("#users").addClass("active");
+        $("#profile").addClass("active");
     });
 
     
@@ -289,6 +295,13 @@ $(document).ready(function() {
         "deferRender": true,   
         "order": [[ 2, "desc" ]],   
         "select": true,
+        "language": {
+            "lengthMenu": "Display _MENU_ Notes per page",
+            "zeroRecords": "Nothing found - sorry",
+            "info": "Showing page _PAGE_ of _PAGES_ ",
+            "infoEmpty": "No notes available",
+            "infoFiltered": "(filtered from _MAX_ total notes)"
+        },
         "ajax": "<?=base_url('admin/profile/datatable_json')?>",       
         "columnDefs": [
               {
@@ -417,3 +430,5 @@ $(document).ready(function() {
 
 });
 </script>
+
+

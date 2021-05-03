@@ -57,8 +57,8 @@
       </li> 
 
       <?php if($this->session->userdata('is_admin_login')): ?>
-      <li id="general_settings">
-        <a href="<?= base_url('admin/general_settings');?>">
+      <li id="admin_settings">
+        <a href="<?= base_url('admin/admin_settings');?>">
           <i class="material-icons">settings</i>
           <span>ADMIN</span>
         </a>
@@ -164,6 +164,7 @@
         </a>
       </li>
     
+      
     </ul>
   </div>
   <!-- #Menu -->
